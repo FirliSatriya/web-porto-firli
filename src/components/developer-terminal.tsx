@@ -46,7 +46,7 @@ const BANNER = String.raw`
 function buildGreeting(): Line[] {
   return [
     line("muted", BANNER),
-    line("ok", "Firli Satriya Putri â€” interactive shell v1.0.0"),
+    line("ok", "Firli Satriya Putri — interactive shell v1.0.0"),
     line(
       "muted",
       "Type `help` for commands, or `whoami` to get straight to the point.",
@@ -93,7 +93,7 @@ function runCommand(
           line("muted", ""),
           line(
             "muted",
-            "tip: â†‘ / â†“ walks your command history, Tab completes a command.",
+            "tip: ↑ / ↓ walks your command history, Tab completes a command.",
           ),
         ],
       };
@@ -102,8 +102,8 @@ function runCommand(
       return {
         lines: [
           line("ok", profile.name),
-          line("out", `${profile.credential} â€” ${profile.degree}`),
-          line("out", `${profile.university} Â· ${profile.location}`),
+          line("out", `${profile.credential} — ${profile.degree}`),
+          line("out", `${profile.university} · ${profile.location}`),
           line("muted", ""),
           line("out", profile.bio),
           line("muted", ""),
@@ -114,10 +114,10 @@ function runCommand(
     case "skills":
       return {
         lines: skillGroups.flatMap((group) => [
-          line("ok", `${group.label} â€” ${group.blurb}`),
+          line("ok", `${group.label} — ${group.blurb}`),
           line(
             "out",
-            group.skills.map((skill) => `  Â· ${skill}`).join("\n"),
+            group.skills.map((skill) => `  · ${skill}`).join("\n"),
           ),
           line("muted", ""),
         ]),
@@ -132,7 +132,7 @@ function runCommand(
             "ok",
             `${project.index}  ${project.title}`,
           ),
-          line("muted", `     ${project.org} Â· ${project.role} Â· ${project.year}`),
+          line("muted", `     ${project.org} · ${project.role} · ${project.year}`),
           line("out", `     ${project.tagline}`),
           line("muted", `     ${project.stack.join(" / ")}`),
           line("muted", ""),
@@ -145,7 +145,7 @@ function runCommand(
       return {
         lines: certifications.flatMap((cert) => [
           line("ok", cert.name),
-          line("muted", `     ${cert.issuer} Â· ${cert.period}`),
+          line("muted", `     ${cert.issuer} · ${cert.period}`),
           line("muted", ""),
         ]),
       };
@@ -176,7 +176,7 @@ function runCommand(
           line(
             "muted",
             next
-              ? "skill pills will drift continuously â€” drag them to fling."
+              ? "skill pills will drift continuously — drag them to fling."
               : "skill pills are now grounded and will settle under gravity.",
           ),
         ],
@@ -188,7 +188,7 @@ function runCommand(
 
     case "exit":
     case "quit":
-      return { lines: [line("muted", "closing shellâ€¦")], close: true };
+      return { lines: [line("muted", "closing shell…")], close: true };
 
     case "date":
       return { lines: [line("out", new Date().toString())] };
@@ -229,7 +229,7 @@ export function DeveloperTerminal() {
   const [open, setOpen] = React.useState(false);
   const { zeroG, setZeroG } = useZeroG();
 
-  // The hero CTA and the âŒ˜K shortcut both drive the same dialog.
+  // The hero CTA and the ⌘K shortcut both drive the same dialog.
   React.useEffect(() => {
     const onOpen = () => setOpen(true);
     const onKey = (event: KeyboardEvent) => {
@@ -261,7 +261,7 @@ export function DeveloperTerminal() {
         <TerminalIcon className="size-3.5 text-foreground" aria-hidden="true" />
         <span className="hidden lg:inline">terminal</span>
         <kbd className="ml-1 rounded border border-hairline-strong bg-surface-2 px-1.5 py-0.5 text-[0.62rem] text-subtle">
-          âŒ˜K
+          ⌘K
         </kbd>
       </DialogTrigger>
       <DialogContent
@@ -390,7 +390,7 @@ function TerminalShell({
           <span className="size-2.5 rounded-full bg-[#28c840]/80" />
         </span>
         <p className="ml-2 truncate text-[0.7rem] text-subtle">
-          firli@portfolio â€” zsh
+          firli@portfolio — zsh
         </p>
         <div className="ml-auto flex items-center gap-1">
           <span
@@ -446,7 +446,7 @@ function TerminalShell({
 
         {lines.length === 0 ? (
           <p className="text-subtle">
-            history cleared â€” type `help` to start again.
+            history cleared — type `help` to start again.
           </p>
         ) : null}
       </div>
@@ -472,7 +472,7 @@ function TerminalShell({
           value={value}
           onChange={(event) => setValue(event.target.value)}
           onKeyDown={onKeyDown}
-          placeholder="type a commandâ€¦"
+          placeholder="type a command…"
           aria-label="Terminal command input"
           className="min-w-0 flex-1 bg-transparent text-foreground caret-foreground placeholder:text-faint focus:outline-none"
         />

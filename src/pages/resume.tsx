@@ -26,7 +26,7 @@ export function ResumePage() {
         Back to portfolio
       </Button>
 
-      <article className="glass rounded-3xl p-6 sm:p-9">
+      <article className="resume-sheet glass rounded-3xl p-6 sm:p-9">
         <header className="border-b border-hairline pb-6 print:border-[#d1d5db]">
           <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2">
             <h1 className="text-2xl font-semibold tracking-tight text-foreground sm:text-3xl">

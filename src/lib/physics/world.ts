@@ -276,6 +276,12 @@ export class PillWorld {
             const transfer = 0.018 * frame;
             a.vx -= dir * transfer;
             b.vx += dir * transfer;
+          } else {
+            // Under gravity the overlap is resolved positionally. Bleeding a
+            // little horizontal speed here stops two pills that rest against
+            // each other from trading pushes forever instead of settling.
+            a.vx *= 1 - 0.08 * frame;
+            b.vx *= 1 - 0.08 * frame;
           }
         } else {
           const push = (overlapY / 2) * 0.34 * frame;
@@ -286,6 +292,9 @@ export class PillWorld {
             const transfer = 0.018 * frame;
             a.vy -= dir * transfer;
             b.vy += dir * transfer;
+          } else {
+            a.vy *= 1 - 0.08 * frame;
+            b.vy *= 1 - 0.08 * frame;
           }
         }
       }

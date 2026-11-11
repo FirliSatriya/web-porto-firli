@@ -4,8 +4,8 @@ import { useTheme } from "@/components/theme-provider";
 
 /**
  * Light/dark switch. Both icons are always rendered and swapped with the `dark`
- * variant instead of state, so the server markup already matches whichever
- * theme the boot script painted â€” no hydration mismatch, no icon flicker.
+ * variant instead of state, so the markup matches whichever theme the boot
+ * script painted — no icon flicker on mount.
  */
 export function ThemeToggle({ className = "" }: { className?: string }) {
   const { toggle } = useTheme();

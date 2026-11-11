@@ -114,7 +114,7 @@ export function Systems() {
                         )}
                         {cert.issuer}
                       </span>
-                      <span aria-hidden="true">Â·</span>
+                      <span aria-hidden="true">·</span>
                       <span className={`font-mono ${tone.text}`}>{cert.period}</span>
                     </p>
                   </div>
@@ -137,7 +137,7 @@ export function Systems() {
                   </span>
                   {index < arr.length - 1 ? (
                     <span className="text-faint" aria-hidden="true">
-                      â†’
+                      →
                     </span>
                   ) : null}
                 </React.Fragment>

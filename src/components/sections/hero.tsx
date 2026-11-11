@@ -152,7 +152,7 @@ function OpenTerminalButton() {
       </span>
       Open Terminal
       <span className="rounded border border-hairline px-1 py-px text-[0.6rem] text-faint">
-        âŒ˜K
+        ⌘K
       </span>
     </button>
   );
@@ -161,8 +161,8 @@ function OpenTerminalButton() {
 const clusterCards = [
   {
     key: "flagship",
-    title: "DSS Â· MLBB Hero Selection",
-    meta: "AHP + SAW Â· 132 heroes",
+    title: "DSS · MLBB Hero Selection",
+    meta: "AHP + SAW · 132 heroes",
     accent: "high" as const,
     visual: "rank" as const,
     className: "left-0 top-0 w-[16.5rem] sm:w-[18.5rem] rotate-[-3deg]",
@@ -170,7 +170,7 @@ const clusterCards = [
   },
   {
     key: "bhrs",
-    title: "BHRIS Â· Basarnas",
+    title: "BHRIS · Basarnas",
     meta: "QR attendance + leave flow",
     accent: "mid" as const,
     visual: "qr" as const,
@@ -180,7 +180,7 @@ const clusterCards = [
   },
   {
     key: "telkom",
-    title: "Telkom Â· Smart City Ops",
+    title: "Telkom · Smart City Ops",
     meta: "Design system + OCR QC",
     accent: "low" as const,
     visual: "spark" as const,
@@ -391,7 +391,7 @@ function GhostVisual({
   accent: Tone;
 }) {
   if (variant === "rank") {
-    // AHPâ†’SAW: decreasing weighted scores, so bars step down like a ranking.
+    // AHP→SAW: decreasing weighted scores, so bars step down like a ranking.
     const values = [100, 84, 71, 58, 44, 31, 21];
     return (
       <div className="mt-3 flex h-7 items-end gap-1" aria-hidden="true">

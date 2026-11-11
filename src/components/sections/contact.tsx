@@ -36,7 +36,7 @@ export function Contact() {
         </h3>
         <p className="mt-2 max-w-md text-[0.85rem] leading-relaxed text-pretty text-subtle">
           Open to Front-End and UI/UX roles where interface craft and data
-          reasoning both matter. Fastest route is email â€” the copy buttons save
+          reasoning both matter. Fastest route is email — the copy buttons save
           you the typing.
         </p>
 
@@ -162,7 +162,7 @@ export function Contact() {
             quick vcard
           </p>
           <p className="mt-2 text-[0.78rem] leading-relaxed text-subtle">
-            Grab the essentials in one line â€” paste into any ATS or message.
+            Grab the essentials in one line — paste into any ATS or message.
           </p>
           <div className="mt-3">
             <ButtonGroup className="w-full">
@@ -250,7 +250,7 @@ function CopyRow({
 function VCardCopyButton() {
   const { copied, copy } = useCopy();
 
-  const vcard = `${profile.name} â€” ${profile.title}\n${profile.email} Â· ${profile.phone}\n${profile.linkedin}\n${profile.location}`;
+  const vcard = `${profile.name} — ${profile.title}\n${profile.email} · ${profile.phone}\n${profile.linkedin}\n${profile.location}`;
 
   return (
     <Button

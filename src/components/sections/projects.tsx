@@ -155,7 +155,7 @@ export function Projects() {
 
       {!visible.length ? (
         <p className="mt-8 rounded-2xl border border-hairline bg-surface px-4 py-8 text-center text-sm text-subtle">
-          Nothing under this filter yet â€” try â€œAll workâ€.
+          Nothing under this filter yet — try “All work”.
         </p>
       ) : null}
     </div>
@@ -231,7 +231,7 @@ function ProjectCard({
             </h3>
 
             <p className="mt-1 text-[0.7rem] text-subtle">
-              {project.org} Â· {project.role}
+              {project.org} · {project.role}
             </p>
           </div>
 

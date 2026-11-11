@@ -7,8 +7,8 @@ const STORAGE_KEY = "firli-theme";
 const CHANGE_EVENT = "firli-theme-change";
 
 /**
- * Runs before hydration so the stored theme lands on <html> before first paint.
- * Kept as a string so it can be inlined in a blocking <script> tag.
+ * Runs before React mounts, as an inline blocking script, so the stored theme
+ * lands on <html> before first paint.
  */
 export const themeBootScript = `(function(){try{var s=localStorage.getItem("${STORAGE_KEY}");var m=window.matchMedia("(prefers-color-scheme: dark)").matches;var d=s==="dark"||(s!=="light"&&m);var r=document.documentElement;r.classList.toggle("dark",d);r.style.colorScheme=d?"dark":"light";}catch(e){}})();`;
 
@@ -88,7 +88,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     getServerSnapshot,
   );
 
-  // Mirror the resolved theme onto <html> â€” the one external system that needs
+  // Mirror the resolved theme onto <html> — the one external system that needs
   // updating. The boot script has already applied it before first paint.
   React.useEffect(() => {
     const root = document.documentElement;

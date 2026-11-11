@@ -44,7 +44,7 @@ type SelectedGroup = "all" | (typeof skillGroups)[number]["id"];
 /** Long certification names get a compact pill label; the full text stays in
  *  the accessible name so nothing is lost for screen readers. */
 function pillLabel(skill: string) {
-  if (skill.startsWith("BNSP")) return "BNSP Certified Â· 2025â€“2028";
+  if (skill.startsWith("BNSP")) return "BNSP Certified · 2025–2028";
   return skill;
 }
 
@@ -192,7 +192,7 @@ export function SkillsArena() {
             {zeroG ? "weightless drift enabled" : "gravity enabled"}
           </span>
           <span className="ml-auto font-mono text-[0.6rem]">
-            {hovered ?? "physics Â· worker simulation"}
+            {hovered ?? "physics · worker simulation"}
           </span>
         </div>
       </div>
@@ -284,11 +284,11 @@ function ArenaCanvas({
       );
       const pillHeight = (measured?.offsetHeight ?? item.height) * density;
 
-      // Deterministic jitter: Math.random() during render is a prerender error
-      // with Cache Components, and a stable hash also avoids hydration drift.
+      // Deterministic jitter, not Math.random(): the seed must be stable across
+      // re-renders so pills do not jump when the arena re-measures.
       const jitter = hashJitter(item.id);
 
-      // Seeded pills are rotated up to Â±0.22rad, so reserve the rotated bounds
+      // Seeded pills are rotated up to ±0.22rad, so reserve the rotated bounds
       // or the first frame starts half-clipped.
       const seedAngle = 0.14;
       const cos = Math.cos(seedAngle);
@@ -571,7 +571,7 @@ function ArenaCanvas({
                   scale: { duration: 0.18 },
                 }}
                 onPointerDown={(event) => startDrag(pill.id, event)}
-                onMouseEnter={() => setHovered(`${pill.group} Â· ${pill.label}`)}
+                onMouseEnter={() => setHovered(`${pill.group} · ${pill.label}`)}
                 onMouseLeave={() => setHovered(null)}
                 style={{
                   width: pill.width,
@@ -584,7 +584,7 @@ function ArenaCanvas({
                 } ${isDragging ? "cursor-grabbing ring-2 ring-ring" : ""} ${
                   hovered?.endsWith(pill.label) ? "brightness-110" : ""
                 }`}
-                aria-label={`${pill.label} â€” ${pill.group} skill`}
+                aria-label={`${pill.label} — ${pill.group} skill`}
               >
                 <span
                   className={`size-1.5 shrink-0 rounded-full ${DOT_CLASS[pill.tone]}`}

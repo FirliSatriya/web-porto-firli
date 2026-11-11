@@ -368,26 +368,29 @@
 }
 
 @media print {
-  /* Only the résumé page carries an <article>. Everything below is scoped to
-     that case so printing the landing page is not silently blanked. */
-  body:has(article) {
+  /* The résumé sheet opts into print styling with `.resume-sheet`. Keying off
+     the element type would also match the landing page, which uses <article>
+     for project cards, and blank out its content. */
+  body:has(.resume-sheet) {
     background: #ffffff !important;
     color: #111827 !important;
   }
 
-  /* Strip the site chrome and the résumé page's back button entirely. */
-  body:has(article) > *:not(main),
-  body:has(article) main > *:not(article),
-  body:has(article) article .print\:hidden {
+  /* Strip the site chrome and the résumé page's back button entirely. React
+     mounts into #root, so chrome sits one level down:
+     #root > [background, skip link, header, main]. */
+  body:has(.resume-sheet) #root > *:not(main),
+  body:has(.resume-sheet) main > *:not(article),
+  body:has(.resume-sheet) article .print\:hidden {
     display: none !important;
   }
 
-  body:has(article) main {
+  body:has(.resume-sheet) main {
     max-width: none !important;
     padding: 0 !important;
   }
 
-  body:has(article) article {
+  body:has(.resume-sheet) article {
     width: 100%;
     background: #ffffff !important;
     border: 0 !important;
@@ -398,45 +401,45 @@
   }
 
   /* Ink-on-white needs a hierarchy: body copy near-black, metadata grey. */
-  body:has(article) article h1,
-  body:has(article) article h2,
-  body:has(article) article h3 {
+  body:has(.resume-sheet) article h1,
+  body:has(.resume-sheet) article h2,
+  body:has(.resume-sheet) article h3 {
     color: #0f172a !important;
   }
 
-  body:has(article) article p,
-  body:has(article) article li,
-  body:has(article) article dt,
-  body:has(article) article dd,
-  body:has(article) article span,
-  body:has(article) article div {
+  body:has(.resume-sheet) article p,
+  body:has(.resume-sheet) article li,
+  body:has(.resume-sheet) article dt,
+  body:has(.resume-sheet) article dd,
+  body:has(.resume-sheet) article span,
+  body:has(.resume-sheet) article div {
     color: #1f2937 !important;
   }
 
-  body:has(article) article .font-mono {
+  body:has(.resume-sheet) article .font-mono {
     color: #4b5563 !important;
   }
 
-  body:has(article) article h1 {
+  body:has(.resume-sheet) article h1 {
     font-size: 22pt;
   }
 
-  body:has(article) article a {
+  body:has(.resume-sheet) article a {
     color: #111827 !important;
     text-decoration: none !important;
   }
 
   /* Paper has no hover, so trim the on-screen breathing room. */
-  body:has(article) article header {
+  body:has(.resume-sheet) article header {
     padding-bottom: 0.55rem !important;
   }
 
-  body:has(article) article ul,
-  body:has(article) article dl {
+  body:has(.resume-sheet) article ul,
+  body:has(.resume-sheet) article dl {
     row-gap: 0.6rem !important;
   }
 
-  body:has(article) article section {
+  body:has(.resume-sheet) article section {
     margin-top: 0.85rem !important;
     padding-top: 0.6rem !important;
     /* Sections are small; moving one whole beats splitting its heading away. */
@@ -444,12 +447,12 @@
   }
 
   /* Fill page one rather than leaving a hole; keep individual entries whole. */
-  body:has(article) article li,
-  body:has(article) article p,
-  body:has(article) article dl > div,
-  body:has(article) article h1,
-  body:has(article) article h2,
-  body:has(article) article h3 {
+  body:has(.resume-sheet) article li,
+  body:has(.resume-sheet) article p,
+  body:has(.resume-sheet) article dl > div,
+  body:has(.resume-sheet) article h1,
+  body:has(.resume-sheet) article h2,
+  body:has(.resume-sheet) article h3 {
     break-inside: avoid;
     break-after: avoid;
   }
