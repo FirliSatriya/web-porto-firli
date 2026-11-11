@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en" data-scroll-behavior="smooth" class="h-full antialiased">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Firli Satriya Putri — Applied Informatics Engineer</title>
+    <meta
+      name="description"
+      content="Portfolio of Firli Satriya Putri — Applied Informatics Engineer, UI/UX practitioner and BNSP-certified data scientist building data-driven web systems."
+    />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <script>
+      // Applies the saved theme before paint so there is no flash of the wrong
+      // palette. Kept inline and blocking on purpose.
+      (function () {
+        try {
+          var s = localStorage.getItem("firli-theme");
+          var m = window.matchMedia("(prefers-color-scheme: dark)").matches;
+          var d = s === "dark" || (s !== "light" && m);
+          var r = document.documentElement;
+          r.classList.toggle("dark", d);
+          r.style.colorScheme = d ? "dark" : "light";
+        } catch (e) {}
+      })();
+    </script>
+  </head>
+  <body class="relative flex min-h-full flex-col bg-background text-foreground">
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
