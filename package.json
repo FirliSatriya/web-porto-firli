@@ -8,6 +8,7 @@
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview",
     "typecheck": "tsc --noEmit",
+    "previews": "node scripts/fetch-previews.mjs",
     "lint": "eslint"
   },
   "dependencies": {

@@ -1,0 +1,73 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="675" viewBox="0 0 1200 675" role="img">
+  <defs>
+    <pattern id="grid4" width="75" height="75" patternUnits="userSpaceOnUse">
+      <path d="M75 0H0V75" fill="none" stroke="#1c1c1c" stroke-opacity="0.05" stroke-width="1"/>
+    </pattern>
+    <pattern id="dots4" width="12" height="12" patternUnits="userSpaceOnUse">
+      <circle cx="3" cy="3" r="1.2" fill="#1c1c1c" fill-opacity="0.2"/>
+    </pattern>
+  </defs>
+
+  <rect width="1200" height="675" fill="#f4f3f0"/>
+  <rect width="1200" height="675" fill="url(#grid4)"/>
+
+  <text x="72" y="86" fill="#787878" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="15" letter-spacing="2.7">PHOTOBOOTH / WEBRTC</text>
+  <text x="1128" y="86" text-anchor="end" fill="#787878" fill-opacity="0.55" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="13" letter-spacing="2.3">FIG. 04</text>
+  <line x1="72" y1="108" x2="1128" y2="108" stroke="#1c1c1c" stroke-opacity="0.18"/>
+
+  <g fill="#ffffff" fill-opacity="0.5" stroke="#1c1c1c" stroke-opacity="0.24">
+    <rect x="72" y="150" width="200" height="250"/>
+    <rect x="304" y="150" width="200" height="250"/>
+    <rect x="536" y="150" width="200" height="250"/>
+    <rect x="768" y="150" width="200" height="250"/>
+  </g>
+
+  <g fill="#1c1c1c">
+    <circle cx="172" cy="252" r="34" fill-opacity="0.42"/>
+    <path d="M120 356c0-30 24-54 52-54s52 24 52 54z" fill-opacity="0.3"/>
+    <circle cx="404" cy="252" r="34" fill-opacity="0.24"/>
+    <path d="M352 356c0-30 24-54 52-54s52 24 52 54z" fill-opacity="0.18"/>
+  </g>
+
+  <g fill="#1c1c1c" fill-opacity="0.4">
+    <circle cx="636" cy="252" r="34"/>
+    <path d="M584 356c0-30 24-54 52-54s52 24 52 54z"/>
+    <circle cx="868" cy="252" r="34"/>
+    <path d="M816 356c0-30 24-54 52-54s52 24 52 54z"/>
+  </g>
+
+  <rect x="536" y="150" width="200" height="250" fill="none" stroke="#1c1c1c" stroke-width="3"/>
+
+  <rect x="1000" y="150" width="128" height="128" fill="#1c1c1c"/>
+  <g fill="#f4f3f0">
+    <rect x="1012" y="162" width="26" height="26"/>
+    <rect x="1090" y="162" width="26" height="26"/>
+    <rect x="1012" y="240" width="26" height="26"/>
+    <rect x="1052" y="204" width="12" height="12"/>
+    <rect x="1076" y="228" width="12" height="12"/>
+    <rect x="1052" y="252" width="12" height="12"/>
+  </g>
+  <text x="1064" y="304" text-anchor="middle" fill="#787878" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="11" letter-spacing="1.8">SCAN TO PHONE</text>
+
+  <line x1="72" y1="460" x2="1128" y2="460" stroke="#1c1c1c" stroke-opacity="0.25"/>
+  <g stroke="#1c1c1c" stroke-opacity="0.4">
+    <path d="M72 452V468"/>
+    <path d="M232 454V466"/>
+    <path d="M392 454V466"/>
+    <path d="M552 452V468"/>
+    <path d="M712 454V466"/>
+    <path d="M872 454V466"/>
+    <path d="M1032 454V466"/>
+    <path d="M1128 452V468"/>
+  </g>
+
+  <circle cx="552" cy="460" r="9" fill="#1c1c1c"/>
+  <text x="72" y="510" fill="#1c1c1c" fill-opacity="0.6" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="13" letter-spacing="2.4">CLOCK-CALIBRATED COUNTDOWN</text>
+  <text x="1128" y="510" text-anchor="end" fill="#1c1c1c" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="32" letter-spacing="0">&#60; 50 MS</text>
+
+  <rect x="72" y="560" width="1056" height="1" fill="#1c1c1c" fill-opacity="0.12"/>
+  <text x="72" y="600" fill="#1c1c1c" fill-opacity="0.55" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="13" letter-spacing="2.4">2&#8211;4 GUESTS &#183; NO INSTALL &#183; GPU COMPOSITING</text>
+  <rect x="1000" y="578" width="128" height="40" fill="url(#dots4)"/>
+
+  <rect x="0.5" y="0.5" width="1199" height="674" fill="none" stroke="#1c1c1c" stroke-opacity="0.1"/>
+</svg>

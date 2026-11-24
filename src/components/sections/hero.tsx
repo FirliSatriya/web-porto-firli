@@ -12,10 +12,8 @@ import {
   ArrowUpRight,
   Braces,
   Download,
-  MapPin,
   MousePointerClick,
   Sparkles,
-  Terminal,
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -32,14 +30,14 @@ export function Hero() {
     >
       <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)] lg:gap-10">
         <div>
-          <StatusPill />
-
-          <h1 className="mt-6 text-4xl leading-[1.05] font-semibold tracking-[-0.03em] text-balance text-foreground sm:text-5xl lg:text-[3.4rem]">
-            Engineering{" "}
-            <span className="text-gradient-ink">Scalable Interfaces</span>{" "}
-            Driven by{" "}
+          <h1 className="text-4xl leading-[1.05] font-semibold tracking-[-0.03em] text-balance text-foreground sm:text-5xl lg:text-[3.4rem]">
+            Turning{" "}
+            <span className="text-gradient-ink">
+              Complex Workflows & Data
+            </span>{" "}
+            into{" "}
             <span className="relative whitespace-nowrap">
-              <span className="text-gradient-ink">Data Intelligence</span>
+              <span className="text-gradient-ink">Effortless Interfaces</span>
               <svg
                 className="absolute -bottom-2 left-0 h-2.5 w-full text-foreground/30"
                 viewBox="0 0 200 10"
@@ -84,11 +82,7 @@ export function Hero() {
             </Button>
           </div>
 
-          <div className="mt-6">
-            <OpenTerminalButton />
-          </div>
-
-          <dl className="mt-10 grid max-w-lg grid-cols-3 gap-3 border-t border-hairline pt-6">
+          <dl className="mt-8 grid max-w-lg grid-cols-3 gap-3 border-t border-hairline pt-6">
             {[
               { label: "Degree", value: "S.Tr.Kom." },
               { label: "Certified", value: "BNSP 2025" },
@@ -117,47 +111,6 @@ export function Hero() {
   );
 }
 
-function StatusPill() {
-  return (
-    <div className="inline-flex flex-wrap items-center gap-x-3 gap-y-2 rounded-full border border-hairline bg-surface px-3.5 py-1.5 backdrop-blur-sm">
-      <span className="flex items-center gap-2">
-        <span
-          className="animate-pulse-ring size-1.5 rounded-full bg-tone-high"
-          aria-hidden="true"
-        />
-        <span className="text-[0.72rem] font-medium text-foreground">
-          {profile.availability}
-        </span>
-      </span>
-      <span className="hidden h-3 w-px bg-hairline-strong sm:block" aria-hidden="true" />
-      <span className="hidden items-center gap-1.5 text-[0.7rem] text-subtle sm:flex">
-        <MapPin className="size-3" aria-hidden="true" />
-        {profile.location}
-      </span>
-    </div>
-  );
-}
-
-function OpenTerminalButton() {
-  return (
-    <button
-      type="button"
-      onClick={() => {
-        window.dispatchEvent(new CustomEvent("open-terminal"));
-      }}
-      className="group inline-flex items-center gap-2 font-mono text-[0.72rem] text-subtle transition-colors hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
-    >
-      <span className="grid size-6 place-items-center rounded-md border border-hairline bg-surface text-foreground transition-colors group-hover:border-hairline-strong group-hover:bg-surface-2">
-        <Terminal className="size-3" aria-hidden="true" />
-      </span>
-      Open Terminal
-      <span className="rounded border border-hairline px-1 py-px text-[0.6rem] text-faint">
-        ⌘K
-      </span>
-    </button>
-  );
-}
-
 const clusterCards = [
   {
     key: "flagship",
@@ -169,21 +122,21 @@ const clusterCards = [
     depth: 1,
   },
   {
-    key: "bhrs",
-    title: "BHRIS · Basarnas",
-    meta: "QR attendance + leave flow",
+    key: "firelle",
+    title: "FIRELLE · POS System",
+    meta: "Boutique checkout · live demo",
     accent: "mid" as const,
-    visual: "qr" as const,
+    visual: "spark" as const,
     className:
       "right-0 top-[7.5rem] w-[15rem] sm:w-[16.5rem] rotate-[2.5deg]",
     depth: 1.6,
   },
   {
-    key: "telkom",
-    title: "Telkom · Smart City Ops",
-    meta: "Design system + OCR QC",
+    key: "photobooth",
+    title: "Photobooth Remote",
+    meta: "WebRTC · synced capture",
     accent: "low" as const,
-    visual: "spark" as const,
+    visual: "qr" as const,
     className:
       "left-[1.5rem] top-[15.5rem] w-[15.5rem] sm:left-[3rem] sm:w-[17rem] rotate-[1.5deg]",
     depth: 2.2,

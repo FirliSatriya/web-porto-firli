@@ -21,7 +21,7 @@ export function HomePage() {
               <span className="text-gradient-ink"> constraints</span>
             </>
           }
-          description="Five builds spanning decision-support algorithms, government workflow digitisation, enterprise design systems and commerce. Each one carries a measurable outcome, not just a screenshot."
+          description="Four builds spanning decision-support algorithms, online storefronts, point-of-sale operations and real-time WebRTC media. Each one carries a measurable outcome, not just a screenshot."
         >
           <Projects />
         </Section>
@@ -30,7 +30,7 @@ export function HomePage() {
           id="systems"
           eyebrow="How I work"
           title="Reusable systems, not one-off screens"
-          description="The parts of the craft that repeat across projects: auditable algorithms, design tokens that survive handoff, and quality control for messy real-world data."
+          description="The patterns that repeat across the four builds: an auditable ranking pipeline, a three-step buying path, store operations that keep transactions in one place, and a synchronised real-time capture stack."
         >
           <Systems />
         </Section>
@@ -48,7 +48,7 @@ export function HomePage() {
           id="contact"
           eyebrow="Contact"
           title="One click away from a conversation"
-          description="Email, phone and LinkedIn are all copyable or directly dialable. If you prefer a shell, the terminal understands `contact` too."
+          description="Email and phone are one click from a copy or a call — and the terminal in the header understands `contact` too."
         >
           <Contact />
         </Section>

@@ -7,6 +7,8 @@ import {
   Workflow,
   Gauge,
   Cpu,
+  Store,
+  Camera,
 } from "lucide-react";
 
 import { certifications, systems, type Tone } from "@/lib/content";
@@ -38,6 +40,8 @@ const ICONS = {
   design: Gauge,
   scan: ScanLine,
   flow: Workflow,
+  store: Store,
+  capture: Camera,
 } as const;
 
 export function Systems() {

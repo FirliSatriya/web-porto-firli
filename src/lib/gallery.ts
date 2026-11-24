@@ -71,7 +71,7 @@ export const gallery: GalleryItem[] = [
     height: 1500,
     title: "Storefront Draft",
     year: "2024",
-    kind: "Commerce",
+    kind: "Store",
     note: "Catalogue tiles and a three-step checkout, trimmed until only the buying path survived.",
     alt: "Storefront layout study with two columns of product tiles and a solid checkout bar.",
     tone: "mid",

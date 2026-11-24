@@ -44,7 +44,7 @@ const FILTERS = [
   { value: "flagship", label: "Flagship" },
   { value: "frontend", label: "Front-End & UI/UX" },
   { value: "data", label: "Data & Algorithms" },
-  { value: "commerce", label: "Commerce" },
+  { value: "store", label: "Store & POS" },
 ] as const;
 
 type FilterValue = (typeof FILTERS)[number]["value"];
@@ -52,12 +52,18 @@ type FilterValue = (typeof FILTERS)[number]["value"];
 function matchesFilter(project: Project, filter: FilterValue) {
   if (filter === "all") return true;
   if (filter === "flagship") return project.flagship === true;
-  if (filter === "commerce") return project.tags.includes("E-Commerce");
-  if (filter === "data") return project.tags.includes("MCDM") || project.tags.includes("OCR QC");
+  if (filter === "store") {
+    return project.tags.some((tag) =>
+      ["Store", "POS", "Retail Operations"].includes(tag),
+    );
+  }
+  if (filter === "data") {
+    return project.tags.some((tag) =>
+      ["MCDM", "AHP", "SAW", "Data Science"].includes(tag),
+    );
+  }
   return (
-    project.tags.includes("Internal Tool") ||
-    project.tags.includes("Design System") ||
-    project.role.includes("UI/UX")
+    project.role.includes("Front-End") || project.role.includes("UI/UX")
   );
 }
 
@@ -138,7 +144,7 @@ export function Projects() {
         layout
         className={
           density === "comfortable"
-            ? "mt-5 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3"
+            ? "mt-5 grid grid-cols-1 gap-4 md:grid-cols-2"
             : "mt-5 grid grid-cols-1 gap-3"
         }
       >
@@ -172,6 +178,15 @@ function ProjectCard({
   const flagship = project.flagship && density === "comfortable";
   const live = Boolean(project.liveUrl);
 
+  // A missing preview falls back to the committed cover artwork.
+  const [coverFailed, setCoverFailed] = React.useState(false);
+  const cover = project.cover;
+  const coverSrc = cover
+    ? coverFailed
+      ? (cover.fallback ?? cover.src)
+      : cover.src
+    : null;
+
   return (
     <motion.article
       layout
@@ -182,8 +197,8 @@ function ProjectCard({
       className={`group relative flex flex-col overflow-hidden panel rounded-2xl transition-colors duration-300 ${
         live ? "hover:border-hairline-strong focus-within:border-hairline-strong" : "hover:border-hairline-strong"
       } ${TONE_GLOW[project.tone]} ${
-        flagship ? "md:col-span-2 lg:col-span-2" : ""
-      } ${density === "compact" ? "sm:flex-row sm:items-center sm:gap-5" : ""}`}
+        density === "compact" ? "sm:flex-row sm:items-center sm:gap-5" : ""
+      }`}
     >
       {live ? (
         <a
@@ -199,6 +214,25 @@ function ProjectCard({
         aria-hidden="true"
         className={`absolute inset-x-0 top-0 h-px bg-gradient-to-r to-transparent ${TONE_LINE[project.tone]}`}
       />
+
+      {coverSrc ? (
+        <div
+          className={`relative overflow-hidden border-hairline bg-surface-2 ${
+            density === "compact"
+              ? "h-32 w-full shrink-0 border-b sm:h-28 sm:w-40 sm:border-r sm:border-b-0"
+              : "aspect-[16/9] w-full border-b"
+          }`}
+        >
+          <img
+            src={coverSrc}
+            alt={cover?.alt ?? ""}
+            loading="lazy"
+            decoding="async"
+            onError={() => setCoverFailed(true)}
+            className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.03]"
+          />
+        </div>
+      ) : null}
 
       <div
         className={`relative flex flex-1 flex-col p-5 ${density === "compact" ? "sm:p-4" : ""}`}

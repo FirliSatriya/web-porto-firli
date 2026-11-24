@@ -1,16 +1,13 @@
 import * as React from "react";
 import { Link, useLocation } from "react-router";
 import { motion, useMotionValueEvent, useScroll } from "motion/react";
-import { Menu, Orbit, X } from "lucide-react";
+import { Menu, X } from "lucide-react";
 
-import { Switch } from "@/components/ui/switch";
 import { DeveloperTerminal } from "@/components/developer-terminal";
 import { ThemeToggle } from "@/components/theme-toggle";
-import { useZeroG } from "@/components/zero-g-provider";
 import { navLinks, profile } from "@/lib/content";
 
 export function Navbar() {
-  const { zeroG, setZeroG } = useZeroG();
   const { pathname } = useLocation();
   const { scrollY } = useScroll();
   const [elevated, setElevated] = React.useState(false);
@@ -83,28 +80,6 @@ export function Navbar() {
 
           {/* Right cluster */}
           <div className="ml-auto flex items-center gap-1.5 md:ml-0">
-            <label
-              htmlFor="zero-g-navbar"
-              className="group hidden cursor-pointer items-center gap-2 rounded-full border border-hairline bg-surface px-2.5 py-1.5 transition-colors hover:border-hairline-strong hover:bg-surface-2 sm:flex"
-            >
-              <Orbit
-                className={`size-3.5 transition-colors ${
-                  zeroG ? "text-foreground" : "text-faint"
-                }`}
-                aria-hidden="true"
-              />
-              <span className="text-[0.7rem] font-medium text-subtle">
-                Zero-G
-              </span>
-              <Switch
-                id="zero-g-navbar"
-                checked={zeroG}
-                onCheckedChange={setZeroG}
-                aria-label="Toggle zero-gravity physics mode"
-                size="sm"
-              />
-            </label>
-
             <DeveloperTerminal />
 
             <ThemeToggle />
@@ -152,18 +127,6 @@ export function Navbar() {
                   </li>
                 ))}
               </ul>
-
-              <div className="mt-2 flex items-center justify-between gap-2 rounded-xl border border-hairline bg-surface px-3 py-2.5">
-                <span className="flex items-center gap-2 text-sm text-subtle">
-                  <Orbit className="size-4 text-foreground" aria-hidden="true" />
-                  Zero-G Mode
-                </span>
-                <Switch
-                  checked={zeroG}
-                  onCheckedChange={setZeroG}
-                  aria-label="Toggle zero-gravity physics mode"
-                />
-              </div>
 
               <div className="mt-2 flex items-center justify-between gap-2 rounded-xl border border-hairline bg-surface px-3 py-2.5">
                 <span className="text-sm text-subtle">Theme</span>

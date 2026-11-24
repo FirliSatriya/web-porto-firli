@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="675" viewBox="0 0 1200 675" role="img">
+  <defs>
+    <pattern id="grid1" width="75" height="75" patternUnits="userSpaceOnUse">
+      <path d="M75 0H0V75" fill="none" stroke="#1c1c1c" stroke-opacity="0.05" stroke-width="1"/>
+    </pattern>
+    <pattern id="hatch1" width="10" height="10" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+      <path d="M0 0V10" stroke="#1c1c1c" stroke-opacity="0.18" stroke-width="1.2"/>
+    </pattern>
+  </defs>
+
+  <rect width="1200" height="675" fill="#f4f3f0"/>
+  <rect width="1200" height="675" fill="url(#grid1)"/>
+
+  <text x="72" y="86" fill="#787878" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="15" letter-spacing="2.7">DECISION SUPPORT / MLBB</text>
+  <text x="1128" y="86" text-anchor="end" fill="#787878" fill-opacity="0.55" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="13" letter-spacing="2.3">FIG. 01</text>
+  <line x1="72" y1="108" x2="1128" y2="108" stroke="#1c1c1c" stroke-opacity="0.18"/>
+
+  <text x="72" y="170" fill="#1c1c1c" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="13" letter-spacing="2.6" fill-opacity="0.6">AHP &#215; SAW RANKING</text>
+
+  <g>
+    <rect x="88" y="230" width="54" height="330" fill="#1c1c1c"/>
+    <rect x="172" y="276" width="54" height="284" fill="#1c1c1c" fill-opacity="0.82"/>
+    <rect x="256" y="322" width="54" height="238" fill="#1c1c1c" fill-opacity="0.66"/>
+    <rect x="340" y="366" width="54" height="194" fill="#1c1c1c" fill-opacity="0.52"/>
+    <rect x="424" y="408" width="54" height="152" fill="#1c1c1c" fill-opacity="0.4"/>
+    <rect x="508" y="448" width="54" height="112" fill="#1c1c1c" fill-opacity="0.3"/>
+    <rect x="592" y="486" width="54" height="74" fill="#1c1c1c" fill-opacity="0.2"/>
+    <rect x="676" y="518" width="54" height="42" fill="#1c1c1c" fill-opacity="0.12"/>
+  </g>
+  <line x1="88" y1="560" x2="1128" y2="560" stroke="#1c1c1c" stroke-opacity="0.3"/>
+
+  <circle cx="948" cy="330" r="132" fill="none" stroke="#1c1c1c" stroke-opacity="0.22"/>
+  <circle cx="948" cy="330" r="92" fill="none" stroke="#1c1c1c" stroke-opacity="0.16"/>
+  <circle cx="948" cy="330" r="14" fill="#1c1c1c"/>
+
+  <g fill="#1c1c1c" fill-opacity="0.55">
+    <circle cx="948" cy="198" r="6"/>
+    <circle cx="1063" cy="254" r="6"/>
+    <circle cx="1090" cy="376" r="6"/>
+    <circle cx="1000" cy="456" r="6"/>
+    <circle cx="862" cy="428" r="6"/>
+    <circle cx="810" cy="296" r="6"/>
+    <circle cx="880" cy="220" r="6"/>
+  </g>
+
+  <text x="1128" y="500" text-anchor="end" fill="#1c1c1c" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="64" letter-spacing="-2">132</text>
+  <text x="1128" y="530" text-anchor="end" fill="#787878" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="13" letter-spacing="2.6">HEROES SCORED</text>
+
+  <rect x="72" y="600" width="1056" height="1" fill="#1c1c1c" fill-opacity="0.12"/>
+  <text x="72" y="634" fill="#1c1c1c" fill-opacity="0.6" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="13" letter-spacing="2.4">PAIRWISE &#8594; CONSISTENCY &#8594; WEIGHTS &#8594; SAW RANK</text>
+  <rect x="1032" y="616" width="96" height="26" fill="url(#hatch1)"/>
+
+  <rect x="0.5" y="0.5" width="1199" height="674" fill="none" stroke="#1c1c1c" stroke-opacity="0.1"/>
+</svg>
