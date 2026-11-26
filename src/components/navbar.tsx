@@ -4,11 +4,13 @@ import { motion, useMotionValueEvent, useScroll } from "motion/react";
 import { Menu, X } from "lucide-react";
 
 import { DeveloperTerminal } from "@/components/developer-terminal";
+import { LanguageToggle } from "@/components/language-toggle";
 import { ThemeToggle } from "@/components/theme-toggle";
-import { navLinks, profile } from "@/lib/content";
+import { useI18n } from "@/i18n";
 
 export function Navbar() {
   const { pathname } = useLocation();
+  const { profile, navLinks, t } = useI18n();
   const { scrollY } = useScroll();
   const [elevated, setElevated] = React.useState(false);
   const [mobileOpen, setMobileOpen] = React.useState(false);
@@ -29,7 +31,7 @@ export function Navbar() {
   return (
     <header className="fixed inset-x-0 top-0 z-40 flex justify-center px-3 pt-3 sm:px-5 sm:pt-4">
       <motion.nav
-        aria-label="Primary"
+        aria-label={t("nav.primary")}
         initial={{ y: -32, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1], delay: 0.05 }}
@@ -43,7 +45,7 @@ export function Navbar() {
           {/* Monogram + availability */}
           <Link
             to="/"
-            aria-label="Firli Satriya Putri — back to top"
+            aria-label={`${profile.name} — ${t("common.backToTop")}`}
             className="group flex shrink-0 items-center gap-2.5 rounded-full pr-2 focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
           >
             <span className="relative grid size-9 place-items-center rounded-xl border border-hairline-strong bg-surface-2 font-mono text-[0.78rem] font-semibold tracking-tight text-foreground transition-colors group-hover:border-foreground/40">
@@ -82,6 +84,8 @@ export function Navbar() {
           <div className="ml-auto flex items-center gap-1.5 md:ml-0">
             <DeveloperTerminal />
 
+            <LanguageToggle />
+
             <ThemeToggle />
 
             <button
@@ -89,7 +93,7 @@ export function Navbar() {
               onClick={() => setMobileOpen((v) => !v)}
               aria-expanded={mobileOpen}
               aria-controls="mobile-nav"
-              aria-label={mobileOpen ? "Close menu" : "Open menu"}
+              aria-label={mobileOpen ? t("common.closeMenu") : t("common.openMenu")}
               className="grid size-9 place-items-center rounded-full border border-hairline bg-surface text-subtle transition-colors hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none md:hidden"
             >
               {mobileOpen ? (
@@ -129,8 +133,15 @@ export function Navbar() {
               </ul>
 
               <div className="mt-2 flex items-center justify-between gap-2 rounded-xl border border-hairline bg-surface px-3 py-2.5">
-                <span className="text-sm text-subtle">Theme</span>
+                <span className="text-sm text-subtle">{t("common.theme")}</span>
                 <ThemeToggle />
+              </div>
+
+              <div className="mt-2 flex items-center justify-between gap-2 rounded-xl border border-hairline bg-surface px-3 py-2.5">
+                <span className="text-sm text-subtle">
+                  {t("common.language")}
+                </span>
+                <LanguageToggle />
               </div>
 
               <p className="mt-2 flex items-center gap-2 rounded-xl border border-hairline bg-surface px-3 py-2 text-[0.68rem] text-subtle">

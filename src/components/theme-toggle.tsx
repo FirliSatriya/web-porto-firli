@@ -1,5 +1,6 @@
 import { Moon, Sun } from "lucide-react";
 
+import { useI18n } from "@/i18n";
 import { useTheme } from "@/components/theme-provider";
 
 /**
@@ -9,13 +10,15 @@ import { useTheme } from "@/components/theme-provider";
  */
 export function ThemeToggle({ className = "" }: { className?: string }) {
   const { toggle } = useTheme();
+  const { t } = useI18n();
+  const label = t("common.toggleTheme");
 
   return (
     <button
       type="button"
       onClick={toggle}
-      aria-label="Toggle light and dark theme"
-      title="Toggle light and dark theme"
+      aria-label={label}
+      title={label}
       className={`relative grid size-9 shrink-0 place-items-center rounded-full border border-hairline bg-surface text-subtle transition-colors hover:border-hairline-strong hover:bg-surface-2 hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none ${className}`}
     >
       <span className="grid size-4 place-items-center">

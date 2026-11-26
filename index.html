@@ -19,6 +19,8 @@
         var r = document.documentElement;
         r.classList.toggle("dark", d);
         r.style.colorScheme = d ? "dark" : "light";
+        var l = localStorage.getItem("firli-lang");
+        if (l === "id" || l === "en") r.lang = l;
       } catch (e) { }
     })();
   </script>

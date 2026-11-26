@@ -13,7 +13,8 @@ import { Button } from "@/components/ui/button";
 import { ButtonGroup } from "@/components/ui/button-group";
 import { Switch } from "@/components/ui/switch";
 import { useZeroG } from "@/components/zero-g-provider";
-import { skillGroups, type Tone } from "@/lib/content";
+import { useI18n, type SkillGroupContent } from "@/i18n";
+import { type SkillGroupId, type Tone } from "@/lib/content";
 import { PillWorld, type PillSeed, type PillState } from "@/lib/physics/world";
 
 const ACCENT_CLASS: Record<Tone, string> = {
@@ -39,7 +40,7 @@ type PillContent = Omit<Pill, "x" | "y" | "width" | "height"> & {
   height: number;
 };
 
-type SelectedGroup = "all" | (typeof skillGroups)[number]["id"];
+type SelectedGroup = "all" | SkillGroupId;
 
 /** Long certification names get a compact pill label; the full text stays in
  *  the accessible name so nothing is lost for screen readers. */
@@ -49,8 +50,11 @@ function pillLabel(skill: string) {
 }
 
 /** Every skill becomes one pill, tagged with the discipline it belongs to. */
-function buildPills(filter: SelectedGroup): PillContent[] {
-  return skillGroups
+function buildPills(
+  filter: SelectedGroup,
+  groups: SkillGroupContent[],
+): PillContent[] {
+  return groups
     .filter((group) => filter === "all" || group.id === filter)
     .flatMap((group) =>
       group.skills.map((skill) => {
@@ -69,6 +73,7 @@ function buildPills(filter: SelectedGroup): PillContent[] {
 
 export function SkillsArena() {
   const { zeroG, setZeroG, reducedMotion } = useZeroG();
+  const { skillGroups, t } = useI18n();
   const [filter, setFilter] = React.useState<SelectedGroup>("all");
   const [density, setDensity] = React.useState(1);
   const [hovered, setHovered] = React.useState<string | null>(null);
@@ -89,10 +94,10 @@ export function SkillsArena() {
         <div className="relative flex flex-wrap items-center gap-2 border-b border-hairline px-4 py-3">
           <span className="mr-1 flex items-center gap-1.5 font-mono text-[0.64rem] tracking-[0.16em] text-faint uppercase">
             <Sparkles className="size-3 text-foreground" aria-hidden="true" />
-            arena
+            {t("arena.arena")}
           </span>
 
-          <ButtonGroup aria-label="Filter skills by discipline" className="flex-wrap">
+          <ButtonGroup aria-label={t("arena.filterAria")} className="flex-wrap">
             <Button
               size="sm"
               variant={filter === "all" ? "secondary" : "ghost"}
@@ -100,7 +105,7 @@ export function SkillsArena() {
               aria-pressed={filter === "all"}
               className="text-[0.7rem]"
             >
-              All
+              {t("arena.all")}
             </Button>
             {skillGroups.map((group) => (
               <Button
@@ -121,12 +126,12 @@ export function SkillsArena() {
           </ButtonGroup>
 
           <div className="ml-auto flex items-center gap-2">
-            <ButtonGroup aria-label="Pill size">
+            <ButtonGroup aria-label={t("arena.sizeAria")}>
               <Button
                 size="icon-sm"
                 variant="ghost"
                 onClick={() => setDensity((d) => Math.max(0.8, +(d - 0.1).toFixed(2)))}
-                aria-label="Shrink pills"
+                aria-label={t("arena.shrink")}
               >
                 <Minus />
               </Button>
@@ -134,7 +139,7 @@ export function SkillsArena() {
                 size="icon-sm"
                 variant="ghost"
                 onClick={() => setDensity((d) => Math.min(1.35, +(d + 0.1).toFixed(2)))}
-                aria-label="Enlarge pills"
+                aria-label={t("arena.enlarge")}
               >
                 <Plus />
               </Button>
@@ -144,7 +149,7 @@ export function SkillsArena() {
               size="icon-sm"
               variant="ghost"
               onClick={() => resetRef.current?.()}
-              aria-label="Reset skill pill positions"
+              aria-label={t("arena.reset")}
               className="text-subtle hover:text-foreground"
             >
               <RotateCcw />
@@ -166,7 +171,7 @@ export function SkillsArena() {
                 size="sm"
                 checked={zeroG}
                 onCheckedChange={setZeroG}
-                aria-label="Toggle zero-gravity physics"
+                aria-label={t("arena.zeroGAria")}
               />
             </label>
           </div>
@@ -185,14 +190,14 @@ export function SkillsArena() {
         <div className="flex flex-wrap items-center gap-x-4 gap-y-2 border-t border-hairline px-4 py-2.5 text-[0.65rem] text-faint">
           <span className="inline-flex items-center gap-1.5">
             <Hand className="size-3" aria-hidden="true" />
-            drag a pill and release to fling it
+            {t("arena.dragHint")}
           </span>
           <span className="inline-flex items-center gap-1.5">
             <Orbit className="size-3" aria-hidden="true" />
-            {zeroG ? "weightless drift enabled" : "gravity enabled"}
+            {zeroG ? t("arena.weightless") : t("arena.gravity")}
           </span>
           <span className="ml-auto font-mono text-[0.6rem]">
-            {hovered ?? "physics · worker simulation"}
+            {hovered ?? t("arena.physics")}
           </span>
         </div>
       </div>
@@ -217,6 +222,7 @@ function ArenaCanvas({
   setHovered: (value: string | null) => void;
   resetRef: React.RefObject<(() => void) | null>;
 }) {
+  const { skillGroups, t } = useI18n();
   const containerRef = React.useRef<HTMLDivElement>(null);
   const [size, setSize] = React.useState({ width: 0, height: 0 });
   const [positions, setPositions] = React.useState<Record<string, PillState>>({});
@@ -239,7 +245,10 @@ function ArenaCanvas({
   // Measured pill sizes are needed before seeding positions.
   const measureRefs = React.useRef(new Map<string, HTMLDivElement>());
 
-  const items = React.useMemo(() => buildPills(filter), [filter]);
+  const items = React.useMemo(
+    () => buildPills(filter, skillGroups),
+    [filter, skillGroups],
+  );
 
   /* ---------- size tracking ---------- */
   React.useEffect(() => {
@@ -539,7 +548,7 @@ function ArenaCanvas({
         onPointerCancel={endDrag}
         className="relative h-[26rem] touch-none overflow-hidden select-none sm:h-[24rem] lg:h-[26rem]"
         role="region"
-        aria-label="Interactive zero-gravity skills arena"
+        aria-label={t("arena.regionAria")}
       >
         <AnimatePresence initial={false}>
           {seeds.map((pill) => {
@@ -584,7 +593,10 @@ function ArenaCanvas({
                 } ${isDragging ? "cursor-grabbing ring-2 ring-ring" : ""} ${
                   hovered?.endsWith(pill.label) ? "brightness-110" : ""
                 }`}
-                aria-label={`${pill.label} — ${pill.group} skill`}
+                aria-label={t("arena.skillAria", {
+                  label: pill.label,
+                  group: pill.group,
+                })}
               >
                 <span
                   className={`size-1.5 shrink-0 rounded-full ${DOT_CLASS[pill.tone]}`}
@@ -598,7 +610,7 @@ function ArenaCanvas({
 
         {!seeds.length ? (
           <p className="absolute inset-0 grid place-items-center text-sm text-subtle">
-            No skills in this category.
+            {t("arena.empty")}
           </p>
         ) : null}
       </div>

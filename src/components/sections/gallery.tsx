@@ -9,7 +9,8 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { gallery, type GalleryItem } from "@/lib/gallery";
+import { useI18n } from "@/i18n";
+import { type GalleryItem } from "@/lib/gallery";
 import type { Tone } from "@/lib/content";
 
 /** Offset hard shadow per tone: the wall reads as stacked prints, not cards. */
@@ -22,15 +23,19 @@ const TONE_SHADOW: Record<Tone, string> = {
 const pad = (value: number) => String(value).padStart(2, "0");
 
 export function Gallery() {
+  const { gallery, t } = useI18n();
   const [active, setActive] = React.useState<number | null>(null);
   const open = active !== null;
 
-  const step = React.useCallback((direction: 1 | -1) => {
-    setActive((current) => {
-      if (current === null) return current;
-      return (current + direction + gallery.length) % gallery.length;
-    });
-  }, []);
+  const step = React.useCallback(
+    (direction: 1 | -1) => {
+      setActive((current) => {
+        if (current === null) return current;
+        return (current + direction + gallery.length) % gallery.length;
+      });
+    },
+    [gallery.length],
+  );
 
   // Arrow keys page through the wall while the lightbox is open. Escape is
   // handled by the dialog primitive itself. The listener must be capturing:
@@ -58,11 +63,11 @@ export function Gallery() {
     <div className="mt-10">
       <div className="flex flex-wrap items-center gap-3">
         <span className="font-mono text-[0.62rem] tracking-[0.16em] text-faint uppercase">
-          {pad(gallery.length)} records
+          {pad(gallery.length)} {t("gallery.records")}
         </span>
         <span className="h-px flex-1 bg-hairline" aria-hidden="true" />
         <span className="font-mono text-[0.62rem] text-faint">
-          click any frame to open
+          {t("gallery.clickHint")}
         </span>
       </div>
 
@@ -113,6 +118,8 @@ function GalleryCard({
   index: number;
   onOpen: () => void;
 }) {
+  const { t } = useI18n();
+
   return (
     <motion.button
       type="button"
@@ -125,8 +132,8 @@ function GalleryCard({
         delay: Math.min(index % 3, 2) * 0.06,
         ease: [0.22, 1, 0.36, 1],
       }}
-      aria-label={`View ${item.title} (${item.year})`}
-      className={`group mb-7 block w-full overflow-hidden border border-hairline bg-card text-left transition-[transform,box-shadow,border-color] duration-300 hover:-translate-x-1 hover:-translate-y-1 focus-visible:-translate-x-1 focus-visible:-translate-y-1 focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none ${TONE_SHADOW[item.tone]}`}
+      aria-label={t("gallery.viewAria", { title: item.title, year: item.year })}
+      className={`group mb-7 block w-full overflow-hidden border border-hairline bg-card text-left transition-[transform,box-shadow,border-color] duration-300 hover:-translate-x-1 hover:-translate-y-1 focus-visible:-translate-x-1 focus-visible:-translate-y-1 focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none ${TONE_SHADOW[item.tone]} ${item.wide ? "[column-span:all]" : ""}`}
     >
       <div className="relative overflow-hidden">
         <img
@@ -163,7 +170,7 @@ function GalleryCard({
           </span>
           <span className="mt-2 inline-flex translate-y-3 items-center gap-1.5 font-mono text-[0.62rem] text-white/70 delay-75 duration-300 group-hover:translate-y-0">
             <Expand className="size-3" aria-hidden="true" />
-            [ VIEW ]
+            {t("gallery.view")}
           </span>
         </div>
       </div>
@@ -191,6 +198,8 @@ function LightboxBody({
   onClose: () => void;
   onStep: (direction: 1 | -1) => void;
 }) {
+  const { gallery, t } = useI18n();
+
   return (
     <>
       <div className="flex items-center gap-2 border-b border-hairline px-4 py-2.5">
@@ -206,7 +215,7 @@ function LightboxBody({
           <Button
             variant="ghost"
             size="icon-sm"
-            aria-label="Previous image"
+            aria-label={t("gallery.prev")}
             onClick={() => onStep(-1)}
             className="text-subtle hover:text-foreground"
           >
@@ -215,7 +224,7 @@ function LightboxBody({
           <Button
             variant="ghost"
             size="icon-sm"
-            aria-label="Next image"
+            aria-label={t("gallery.next")}
             onClick={() => onStep(1)}
             className="text-subtle hover:text-foreground"
           >
@@ -224,7 +233,7 @@ function LightboxBody({
           <Button
             variant="ghost"
             size="icon-sm"
-            aria-label="Close image viewer"
+            aria-label={t("gallery.close")}
             onClick={onClose}
             className="text-subtle hover:text-foreground"
           >
@@ -292,7 +301,7 @@ function LightboxBody({
           {item.note}
         </DialogDescription>
         <p className="mt-2 font-mono text-[0.6rem] tracking-[0.14em] text-faint uppercase">
-          ← → to browse · esc to close
+          {t("gallery.browseHint")}
         </p>
       </div>
     </>

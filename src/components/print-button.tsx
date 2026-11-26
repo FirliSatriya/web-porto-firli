@@ -1,8 +1,11 @@
 import { Download } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
+import { useI18n } from "@/i18n";
 
 export function PrintButton() {
+  const { t } = useI18n();
+
   return (
     <Button
       size="sm"
@@ -10,7 +13,7 @@ export function PrintButton() {
       className="bg-primary text-primary-foreground hover:opacity-90"
     >
       <Download data-icon="inline-start" aria-hidden="true" />
-      Print / Save as PDF
+      {t("common.printSave")}
     </Button>
   );
 }

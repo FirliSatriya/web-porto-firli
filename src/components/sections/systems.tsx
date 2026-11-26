@@ -2,6 +2,7 @@ import * as React from "react";
 import { motion } from "motion/react";
 import {
   GraduationCap,
+  QrCode,
   ScanLine,
   ShieldCheck,
   Workflow,
@@ -11,7 +12,8 @@ import {
   Camera,
 } from "lucide-react";
 
-import { certifications, systems, type Tone } from "@/lib/content";
+import { useI18n } from "@/i18n";
+import { type Tone } from "@/lib/content";
 
 /** Monochrome tone ladder shared by icon chips and dot markers. */
 const TONE: Record<Tone, { text: string; ring: string; bg: string; dot: string }> = {
@@ -42,9 +44,12 @@ const ICONS = {
   flow: Workflow,
   store: Store,
   capture: Camera,
+  qr: QrCode,
 } as const;
 
 export function Systems() {
+  const { systems, certifications, pipelineSteps, t } = useI18n();
+
   return (
     <div className="mt-10 grid grid-cols-1 gap-4 lg:grid-cols-[minmax(0,1.55fr)_minmax(0,1fr)]">
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
@@ -89,7 +94,7 @@ export function Systems() {
       <div className="panel rounded-2xl p-4">
         <h3 className="flex items-center gap-2 text-[0.78rem] font-semibold tracking-wide text-foreground">
           <ShieldCheck className="size-4" aria-hidden="true" />
-          Verified credentials
+          {t("systems.verified")}
         </h3>
 
         <ul className="mt-4 grid gap-3">
@@ -130,10 +135,10 @@ export function Systems() {
 
         <div className="mt-4 rounded-xl border border-dashed border-hairline-strong p-3">
           <p className="font-mono text-[0.6rem] tracking-[0.14em] text-faint uppercase">
-            pipeline
+            {t("systems.pipeline")}
           </p>
-          <div className="mt-2 flex items-center gap-1.5 font-mono text-[0.62rem]">
-            {["pairwise", "consistency", "weights", "SAW rank"].map(
+          <div className="mt-2 flex flex-wrap items-center gap-1.5 font-mono text-[0.62rem]">
+            {pipelineSteps.map(
               (step, index, arr) => (
                 <React.Fragment key={step}>
                   <span className="rounded border border-hairline bg-surface px-1.5 py-0.5 text-subtle">

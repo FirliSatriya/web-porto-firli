@@ -19,7 +19,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { projects, type Project, type Tone } from "@/lib/content";
+import { type Tone } from "@/lib/content";
+import { useI18n, type LocalizedProject } from "@/i18n";
+import type { MessageKey } from "@/i18n/messages";
 
 const TONE_GLOW: Record<Tone, string> = {
   high: "shadow-[0_0_60px_-30px_var(--glow)]",
@@ -40,42 +42,35 @@ const TONE_LINE: Record<Tone, string> = {
 };
 
 const FILTERS = [
-  { value: "all", label: "All work" },
-  { value: "flagship", label: "Flagship" },
-  { value: "frontend", label: "Front-End & UI/UX" },
-  { value: "data", label: "Data & Algorithms" },
-  { value: "store", label: "Store & POS" },
-] as const;
+  { value: "all", labelKey: "projects.allWork" },
+  { value: "flagship", labelKey: "projects.flagship" },
+  { value: "frontend", labelKey: "projects.frontend" },
+  { value: "data", labelKey: "projects.data" },
+  { value: "store", labelKey: "projects.store" },
+] as const satisfies readonly { value: string; labelKey: MessageKey }[];
 
 type FilterValue = (typeof FILTERS)[number]["value"];
 
-function matchesFilter(project: Project, filter: FilterValue) {
+function matchesFilter(project: LocalizedProject, filter: FilterValue) {
   if (filter === "all") return true;
-  if (filter === "flagship") return project.flagship === true;
-  if (filter === "store") {
-    return project.tags.some((tag) =>
-      ["Store", "POS", "Retail Operations"].includes(tag),
-    );
-  }
-  if (filter === "data") {
-    return project.tags.some((tag) =>
-      ["MCDM", "AHP", "SAW", "Data Science"].includes(tag),
-    );
-  }
-  return (
-    project.role.includes("Front-End") || project.role.includes("UI/UX")
-  );
+  return project.filterKeys.includes(filter);
 }
 
 export function Projects() {
+  const { projects, t } = useI18n();
   const [filter, setFilter] = React.useState<FilterValue>("all");
   const [density, setDensity] = React.useState<"comfortable" | "compact">(
     "comfortable",
   );
 
+  const filterItems = FILTERS.map((option) => ({
+    value: option.value,
+    label: t(option.labelKey),
+  }));
+
   const visible = React.useMemo(
     () => projects.filter((project) => matchesFilter(project, filter)),
-    [filter],
+    [projects, filter],
   );
 
   return (
@@ -84,11 +79,11 @@ export function Projects() {
         <div className="flex flex-wrap items-center gap-3">
           <span className="inline-flex items-center gap-1.5 font-mono text-[0.64rem] tracking-[0.16em] text-faint uppercase">
             <SlidersHorizontal className="size-3" aria-hidden="true" />
-            filter
+            {t("projects.filter")}
           </span>
 
           <Select
-            items={FILTERS}
+            items={filterItems}
             value={filter}
             onValueChange={(value) => {
               if (value) setFilter(value as FilterValue);
@@ -96,13 +91,13 @@ export function Projects() {
           >
             <SelectTrigger
               className="h-8 w-[11.5rem] border-hairline-strong bg-surface text-[0.75rem] text-foreground"
-              aria-label="Filter projects by discipline"
+              aria-label={t("projects.filterAria")}
             >
-              <SelectValue placeholder="All work" />
+              <SelectValue placeholder={t("projects.allWork")} />
             </SelectTrigger>
             <SelectContent alignItemWithTrigger={false} className="border-hairline bg-popover">
               <SelectGroup>
-                {FILTERS.map((option) => (
+                {filterItems.map((option) => (
                   <SelectItem key={option.value} value={option.value}>
                     {option.label}
                   </SelectItem>
@@ -116,7 +111,7 @@ export function Projects() {
           </span>
         </div>
 
-        <ButtonGroup aria-label="Card density">
+        <ButtonGroup aria-label={t("projects.density")}>
           <Button
             size="sm"
             variant={density === "comfortable" ? "secondary" : "ghost"}
@@ -125,7 +120,7 @@ export function Projects() {
             className="text-[0.7rem]"
           >
             <LayoutGrid data-icon="inline-start" aria-hidden="true" />
-            Bento
+            {t("projects.bento")}
           </Button>
           <Button
             size="sm"
@@ -135,7 +130,7 @@ export function Projects() {
             className="text-[0.7rem]"
           >
             <Rows3 data-icon="inline-start" aria-hidden="true" />
-            Rows
+            {t("projects.rows")}
           </Button>
         </ButtonGroup>
       </div>
@@ -161,7 +156,7 @@ export function Projects() {
 
       {!visible.length ? (
         <p className="mt-8 rounded-2xl border border-hairline bg-surface px-4 py-8 text-center text-sm text-subtle">
-          Nothing under this filter yet — try “All work”.
+          {t("projects.empty")}
         </p>
       ) : null}
     </div>
@@ -172,9 +167,10 @@ function ProjectCard({
   project,
   density,
 }: {
-  project: Project;
+  project: LocalizedProject;
   density: "comfortable" | "compact";
 }) {
+  const { t } = useI18n();
   const flagship = project.flagship && density === "comfortable";
   const live = Boolean(project.liveUrl);
 
@@ -205,7 +201,7 @@ function ProjectCard({
           href={project.liveUrl}
           target="_blank"
           rel="noreferrer noopener"
-          aria-label={`Open the live ${project.title} build (opens in a new tab)`}
+          aria-label={t("projects.openLive", { title: project.title })}
           className="absolute inset-0 z-10 rounded-2xl focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
         />
       ) : null}
@@ -251,7 +247,7 @@ function ProjectCard({
                   className="h-5 border-foreground/30 bg-foreground/[0.07] px-1.5 text-[0.58rem] tracking-wide text-foreground"
                 >
                   <Layers className="size-2.5" aria-hidden="true" />
-                  Flagship
+                  {t("projects.flagshipBadge")}
                 </Badge>
               ) : null}
             </div>
@@ -321,7 +317,7 @@ function ProjectCard({
 
           {live ? (
             <span className="ml-auto inline-flex items-center gap-1 font-mono text-[0.6rem] text-subtle transition-colors group-hover:text-foreground">
-              Live demo
+              {t("projects.liveDemo")}
               <ArrowUpRight className="size-2.5" aria-hidden="true" />
             </span>
           ) : null}

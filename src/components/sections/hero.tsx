@@ -18,11 +18,14 @@ import {
 
 import { Button } from "@/components/ui/button";
 import { useZeroG } from "@/components/zero-g-provider";
-import { profile } from "@/lib/content";
+import { useI18n } from "@/i18n";
+import type { MessageKey } from "@/i18n/messages";
 
 type Tone = "high" | "mid" | "low";
 
 export function Hero() {
+  const { profile, t } = useI18n();
+
   return (
     <section
       id="top"
@@ -31,13 +34,13 @@ export function Hero() {
       <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)] lg:gap-10">
         <div>
           <h1 className="text-4xl leading-[1.05] font-semibold tracking-[-0.03em] text-balance text-foreground sm:text-5xl lg:text-[3.4rem]">
-            Turning{" "}
+            {t("hero.titleLead")}{" "}
             <span className="text-gradient-ink">
-              Complex Workflows & Data
+              {t("hero.titleAccent")}
             </span>{" "}
-            into{" "}
+            {t("hero.titleMid")}{" "}
             <span className="relative whitespace-nowrap">
-              <span className="text-gradient-ink">Effortless Interfaces</span>
+              <span className="text-gradient-ink">{t("hero.titleEnd")}</span>
               <svg
                 className="absolute -bottom-2 left-0 h-2.5 w-full text-foreground/30"
                 viewBox="0 0 200 10"
@@ -66,7 +69,7 @@ export function Hero() {
               size="lg"
               className="h-11 w-full rounded-full bg-primary px-6 text-[0.86rem] font-semibold text-primary-foreground shadow-[0_14px_40px_-14px_var(--glow)] transition-all hover:opacity-90 sm:w-auto"
             >
-              View Flagship Projects
+              {t("hero.ctaProjects")}
               <ArrowUpRight data-icon="inline-end" aria-hidden="true" />
             </Button>
 
@@ -78,15 +81,15 @@ export function Hero() {
               className="h-11 w-full rounded-full border border-hairline-strong px-6 text-[0.86rem] font-medium text-foreground hover:bg-surface-2 sm:w-auto"
             >
               <Download data-icon="inline-start" aria-hidden="true" />
-              Download Resume
+              {t("hero.ctaResume")}
             </Button>
           </div>
 
           <dl className="mt-8 grid max-w-lg grid-cols-3 gap-3 border-t border-hairline pt-6">
             {[
-              { label: "Degree", value: "S.Tr.Kom." },
-              { label: "Certified", value: "BNSP 2025" },
-              { label: "Based in", value: "Surabaya" },
+              { label: t("hero.statDegree"), value: "S.Tr.Kom." },
+              { label: t("hero.statCertified"), value: "BNSP 2025" },
+              { label: t("hero.statBasedIn"), value: "Surabaya" },
             ].map((item) => (
               <div key={item.label}>
                 <dt className="text-[0.62rem] tracking-[0.14em] text-faint uppercase">
@@ -105,47 +108,62 @@ export function Hero() {
 
       <div className="mt-16 flex items-center justify-center gap-2 text-[0.65rem] tracking-[0.2em] text-faint uppercase sm:mt-20">
         <ArrowDown className="size-3 animate-bounce" aria-hidden="true" />
-        scroll to explore
+        {t("hero.scroll")}
       </div>
     </section>
   );
 }
 
-const clusterCards = [
+const CLUSTER_LAYOUT: {
+  key: string;
+  titleKey: MessageKey;
+  metaKey: MessageKey;
+  accent: Tone;
+  visual: "rank" | "qr" | "spark";
+  className: string;
+  depth: number;
+}[] = [
   {
     key: "flagship",
-    title: "DSS · MLBB Hero Selection",
-    meta: "AHP + SAW · 132 heroes",
-    accent: "high" as const,
-    visual: "rank" as const,
+    titleKey: "hero.cardDss",
+    metaKey: "hero.cardDssMeta",
+    accent: "high",
+    visual: "rank",
     className: "left-0 top-0 w-[16.5rem] sm:w-[18.5rem] rotate-[-3deg]",
     depth: 1,
   },
   {
     key: "firelle",
-    title: "FIRELLE · POS System",
-    meta: "Boutique checkout · live demo",
-    accent: "mid" as const,
-    visual: "spark" as const,
+    titleKey: "hero.cardFirelle",
+    metaKey: "hero.cardFirelleMeta",
+    accent: "mid",
+    visual: "spark",
     className:
       "right-0 top-[7.5rem] w-[15rem] sm:w-[16.5rem] rotate-[2.5deg]",
     depth: 1.6,
   },
   {
     key: "photobooth",
-    title: "Photobooth Remote",
-    meta: "WebRTC · synced capture",
-    accent: "low" as const,
-    visual: "qr" as const,
+    titleKey: "hero.cardPhotobooth",
+    metaKey: "hero.cardPhotoboothMeta",
+    accent: "low",
+    visual: "qr",
     className:
       "left-[1.5rem] top-[15.5rem] w-[15.5rem] sm:left-[3rem] sm:w-[17rem] rotate-[1.5deg]",
     depth: 2.2,
   },
-] as const;
+];
 
 function FloatingCluster() {
   const reduce = useReducedMotion();
   const { zeroG } = useZeroG();
+  const { t } = useI18n();
+
+  const clusterCards = CLUSTER_LAYOUT.map((card) => ({
+    ...card,
+    title: t(card.titleKey),
+    meta: t(card.metaKey),
+  }));
 
   const pointerX = useMotionValue(0);
   const pointerY = useMotionValue(0);
@@ -257,19 +275,19 @@ function FloatingCluster() {
         {/* floating chips */}
         <FloatingChip
           icon={<Sparkles className="size-3.5" aria-hidden="true" />}
-          label="UI/UX"
+          label={t("hero.chipUiux")}
           className="top-[2.5rem] right-[3rem]"
           tone="high"
         />
         <FloatingChip
           icon={<Braces className="size-3.5" aria-hidden="true" />}
-          label="TypeScript"
+          label={t("hero.chipTs")}
           className="top-[13rem] left-[-0.75rem]"
           tone="low"
         />
         <FloatingChip
           icon={<MousePointerClick className="size-3.5" aria-hidden="true" />}
-          label="Zero-friction"
+          label={t("hero.chipZero")}
           className="right-[1.5rem] bottom-[2.75rem]"
           tone="mid"
         />

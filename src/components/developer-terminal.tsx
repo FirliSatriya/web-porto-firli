@@ -14,11 +14,18 @@ import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "@/components/
 import { useCopy } from "@/hooks/use-copy";
 import { useZeroG } from "@/components/zero-g-provider";
 import {
-  certifications,
-  profile,
-  projects,
-  skillGroups,
-} from "@/lib/content";
+  useI18n,
+  type CertificationContent,
+  type LocalizedProject,
+  type ProfileContent,
+  type SkillGroupContent,
+} from "@/i18n";
+import type { MessageKey } from "@/i18n/messages";
+
+type TFunction = (
+  key: MessageKey,
+  vars?: Record<string, string | number>,
+) => string;
 
 type LineKind = "out" | "ok" | "muted" | "warn" | "link" | "cmd";
 
@@ -43,22 +50,28 @@ const BANNER = String.raw`
  |_|   |_____/  |_____/   |_|  /_/    
 `;
 
-function buildGreeting(): Line[] {
+function buildGreeting(t: TFunction): Line[] {
   return [
     line("muted", BANNER),
-    line("ok", "Firli Satriya Putri — interactive shell v1.0.0"),
-    line(
-      "muted",
-      "Type `help` for commands, or `whoami` to get straight to the point.",
-    ),
+    line("ok", t("terminal.greeting")),
+    line("muted", t("terminal.greetingHint")),
     line("muted", ""),
   ];
 }
 
 function runCommand(
   raw: string,
-  ctx: { setZeroG: (v: boolean) => void; zeroG: boolean },
+  ctx: {
+    setZeroG: (v: boolean) => void;
+    zeroG: boolean;
+    t: TFunction;
+    profile: ProfileContent;
+    projects: LocalizedProject[];
+    skillGroups: SkillGroupContent[];
+    certifications: CertificationContent[];
+  },
 ): { lines: Line[]; clear?: boolean; close?: boolean } {
+  const { t, profile, projects, skillGroups, certifications } = ctx;
   const input = raw.trim();
   const [name, ...args] = input.split(/\s+/);
   const command = (name ?? "").toLowerCase();
@@ -71,30 +84,18 @@ function runCommand(
     case "help":
       return {
         lines: [
-          line("ok", "Available commands"),
-          line(
-            "out",
-            "  help        list every command available in this shell",
-          ),
-          line(
-            "out",
-            "  whoami      credentials, degree, and current focus",
-          ),
-          line("out", "  skills      tech stack grouped by discipline"),
-          line("out", "  projects    flagship work and client systems"),
-          line("out", "  certs       certifications and validity window"),
-          line("out", "  contact     email, phone, and LinkedIn"),
-          line(
-            "out",
-            "  zero-g      toggle the zero-gravity physics mode",
-          ),
-          line("out", "  clear       wipe the terminal history"),
-          line("out", "  exit        close this shell"),
+          line("ok", t("terminal.helpTitle")),
+          line("out", `  help        ${t("terminal.helpHelp")}`),
+          line("out", `  whoami      ${t("terminal.helpWhoami")}`),
+          line("out", `  skills      ${t("terminal.helpSkills")}`),
+          line("out", `  projects    ${t("terminal.helpProjects")}`),
+          line("out", `  certs       ${t("terminal.helpCerts")}`),
+          line("out", `  contact     ${t("terminal.helpContact")}`),
+          line("out", `  zero-g      ${t("terminal.helpZeroG")}`),
+          line("out", `  clear       ${t("terminal.helpClear")}`),
+          line("out", `  exit        ${t("terminal.helpExit")}`),
           line("muted", ""),
-          line(
-            "muted",
-            "tip: ↑ / ↓ walks your command history, Tab completes a command.",
-          ),
+          line("muted", t("terminal.tip")),
         ],
       };
 
@@ -107,7 +108,7 @@ function runCommand(
           line("muted", ""),
           line("out", profile.bio),
           line("muted", ""),
-          line("ok", `status: ${profile.availability}`),
+          line("ok", `${t("terminal.status")} ${profile.availability}`),
         ],
       };
 
@@ -153,16 +154,13 @@ function runCommand(
     case "contact":
       return {
         lines: [
-          line("ok", "Open channels"),
-          line("out", `  email     ${profile.email}`),
-          line("out", `  phone     ${profile.phone}`),
-          line("out", `  linkedin  ${profile.linkedin}`),
-          line("out", `  location  ${profile.location}`),
+          line("ok", t("terminal.contactTitle")),
+          line("out", `  ${t("terminal.email")}     ${profile.email}`),
+          line("out", `  ${t("terminal.phone")}     ${profile.phone}`),
+          line("out", `  ${t("terminal.linkedin")}  ${profile.linkedin}`),
+          line("out", `  ${t("terminal.location")}  ${profile.location}`),
           line("muted", ""),
-          line(
-            "muted",
-            "the contact section has one-click copy for email and phone.",
-          ),
+          line("muted", t("terminal.contactTip")),
         ],
       };
 
@@ -172,12 +170,10 @@ function runCommand(
       ctx.setZeroG(next);
       return {
         lines: [
-          line("ok", `zero-gravity physics ${next ? "engaged" : "disengaged"}.`),
+          line("ok", next ? t("terminal.zeroOn") : t("terminal.zeroOff")),
           line(
             "muted",
-            next
-              ? "skill pills will drift continuously — drag them to fling."
-              : "skill pills are now grounded and will settle under gravity.",
+            next ? t("terminal.zeroOnHint") : t("terminal.zeroOffHint"),
           ),
         ],
       };
@@ -188,7 +184,7 @@ function runCommand(
 
     case "exit":
     case "quit":
-      return { lines: [line("muted", "closing shell…")], close: true };
+      return { lines: [line("muted", t("terminal.closing"))], close: true };
 
     case "date":
       return { lines: [line("out", new Date().toString())] };
@@ -198,19 +194,14 @@ function runCommand(
 
     case "sudo":
       return {
-        lines: [
-          line(
-            "warn",
-            "firli is not in the sudoers file. This incident has been reported.",
-          ),
-        ],
+        lines: [line("warn", t("terminal.sudo"))],
       };
 
     default:
       return {
         lines: [
-          line("warn", `command not found: ${name}`),
-          line("muted", "type `help` to see what this shell understands."),
+          line("warn", t("terminal.notFound", { name: name ?? "" })),
+          line("muted", t("terminal.unknownHint")),
         ],
       };
   }
@@ -228,6 +219,7 @@ const kindClass: Record<LineKind, string> = {
 export function DeveloperTerminal() {
   const [open, setOpen] = React.useState(false);
   const { zeroG, setZeroG } = useZeroG();
+  const { t } = useI18n();
 
   // The hero CTA and the ⌘K shortcut both drive the same dialog.
   React.useEffect(() => {
@@ -253,7 +245,7 @@ export function DeveloperTerminal() {
         render={
           <button
             type="button"
-            aria-label="Open developer terminal"
+            aria-label={t("terminal.openAria")}
             className="group relative hidden items-center gap-2 rounded-full border border-hairline-strong bg-surface px-3 py-1.5 font-mono text-[0.7rem] tracking-wide text-subtle transition-colors hover:border-hairline-strong hover:bg-surface-2 hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background focus-visible:outline-none md:inline-flex"
           />
         }
@@ -269,9 +261,7 @@ export function DeveloperTerminal() {
         showCloseButton={false}
         aria-describedby={undefined}
       >
-        <DialogTitle className="sr-only">
-          Firli Satriya interactive developer terminal
-        </DialogTitle>
+        <DialogTitle className="sr-only">{t("terminal.title")}</DialogTitle>
         {open ? (
           <TerminalShell
             zeroG={zeroG}
@@ -293,7 +283,8 @@ function TerminalShell({
   setZeroG: (v: boolean) => void;
   onClose: () => void;
 }) {
-  const [lines, setLines] = React.useState<Line[]>(() => buildGreeting());
+  const { t, profile, projects, skillGroups, certifications } = useI18n();
+  const [lines, setLines] = React.useState<Line[]>(() => buildGreeting(t));
   const [value, setValue] = React.useState("");
   const [history, setHistory] = React.useState<string[]>([]);
   const [historyIndex, setHistoryIndex] = React.useState(-1);
@@ -311,7 +302,15 @@ function TerminalShell({
   }, []);
 
   const submit = (raw: string) => {
-    const result = runCommand(raw, { setZeroG, zeroG });
+    const result = runCommand(raw, {
+      setZeroG,
+      zeroG,
+      t,
+      profile,
+      projects,
+      skillGroups,
+      certifications,
+    });
 
     if (raw.trim()) {
       setHistory((prev) => [...prev, raw.trim()]);
@@ -400,12 +399,12 @@ function TerminalShell({
                 : "bg-surface-2 text-subtle"
             }`}
           >
-            zero-g {zeroG ? "on" : "off"}
+            {zeroG ? t("terminal.zeroGOn") : t("terminal.zeroGOff")}
           </span>
           <Button
             variant="ghost"
             size="icon-sm"
-            aria-label="Clear terminal history"
+            aria-label={t("terminal.clearAria")}
             onClick={() => setLines([])}
             className="text-subtle hover:text-foreground"
           >
@@ -414,7 +413,7 @@ function TerminalShell({
           <Button
             variant="ghost"
             size="icon-sm"
-            aria-label="Close terminal"
+            aria-label={t("terminal.closeAria")}
             onClick={onClose}
             className="text-subtle hover:text-foreground"
           >
@@ -430,7 +429,7 @@ function TerminalShell({
         className="flex-1 overflow-y-auto px-3 py-3 [scrollbar-width:thin]"
         role="log"
         aria-live="polite"
-        aria-label="Terminal output"
+        aria-label={t("terminal.outputAria")}
       >
         {lines.map((entry) => (
           <motion.pre
@@ -445,9 +444,7 @@ function TerminalShell({
         ))}
 
         {lines.length === 0 ? (
-          <p className="text-subtle">
-            history cleared — type `help` to start again.
-          </p>
+          <p className="text-subtle">{t("terminal.historyCleared")}</p>
         ) : null}
       </div>
 
@@ -472,8 +469,8 @@ function TerminalShell({
           value={value}
           onChange={(event) => setValue(event.target.value)}
           onKeyDown={onKeyDown}
-          placeholder="type a command…"
-          aria-label="Terminal command input"
+          placeholder={t("terminal.placeholder")}
+          aria-label={t("terminal.inputAria")}
           className="min-w-0 flex-1 bg-transparent text-foreground caret-foreground placeholder:text-faint focus:outline-none"
         />
         <kbd className="hidden items-center gap-1 rounded border border-hairline px-1.5 py-0.5 text-[0.6rem] text-subtle sm:flex">
@@ -489,11 +486,12 @@ function TerminalShell({
 function TerminalQuickActions({ onCommand }: { onCommand: (cmd: string) => void }) {
   const commands = ["whoami", "skills", "projects", "contact", "zero-g"];
   const { copied, copy } = useCopy();
+  const { profile, t } = useI18n();
 
   return (
     <div className="flex flex-wrap items-center gap-1.5 border-t border-hairline bg-surface/60 px-3 py-2">
       <span className="mr-1 text-[0.62rem] tracking-widest text-faint uppercase">
-        quick
+        {t("terminal.quick")}
       </span>
       {commands.map((command) => (
         <button
@@ -515,7 +513,7 @@ function TerminalQuickActions({ onCommand }: { onCommand: (cmd: string) => void 
         ) : (
           <Copy className="size-3" aria-hidden="true" />
         )}
-        {copied ? "email copied" : "copy email"}
+        {copied ? t("terminal.emailCopied") : t("terminal.copyEmail")}
       </button>
     </div>
   );

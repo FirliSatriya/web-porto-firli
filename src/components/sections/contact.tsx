@@ -5,9 +5,11 @@ import { ArrowUpRight, Check, Copy, Mail, MapPin, Phone } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { GitHubIcon, LinkedInIcon } from "@/components/icons";
 import { useCopy } from "@/hooks/use-copy";
-import { profile } from "@/lib/content";
+import { useI18n } from "@/i18n";
 
 export function Contact() {
+  const { profile, t } = useI18n();
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 18 }}
@@ -24,10 +26,10 @@ export function Contact() {
       <div className="flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h3 className="text-lg font-semibold tracking-tight text-foreground">
-            Let&apos;s build something with zero friction.
+            {t("contact.heading")}
           </h3>
           <p className="mt-1.5 text-[0.82rem] text-subtle">
-            Open to Front-End &amp; UI/UX roles. Email is fastest.
+            {t("contact.sub")}
           </p>
         </div>
 
@@ -60,14 +62,14 @@ export function Contact() {
       <div className="mt-5 grid gap-2.5 sm:grid-cols-2">
         <CopyRow
           icon={<Mail className="size-4" aria-hidden="true" />}
-          label="Email"
+          label={t("contact.email")}
           value={profile.email}
           href={`mailto:${profile.email}`}
           tone="high"
         />
         <CopyRow
           icon={<Phone className="size-4" aria-hidden="true" />}
-          label="Phone"
+          label={t("contact.phone")}
           value={profile.phone}
           href={`tel:${profile.phoneHref}`}
           tone="mid"
@@ -115,6 +117,7 @@ function CopyRow({
   tone: keyof typeof TONE_MAP;
 }) {
   const { copied, copy } = useCopy();
+  const { t } = useI18n();
   const tone = TONE_MAP[toneKey];
 
   return (
@@ -142,7 +145,7 @@ function CopyRow({
         variant="ghost"
         size="sm"
         onClick={() => copy(value)}
-        aria-label={`Copy ${label.toLowerCase()}`}
+        aria-label={t("contact.copyAria", { label })}
         className="shrink-0 text-[0.65rem] text-subtle hover:text-foreground"
       >
         {copied ? (
@@ -150,9 +153,11 @@ function CopyRow({
         ) : (
           <Copy className="size-3.5" aria-hidden="true" />
         )}
-        <span className="hidden sm:inline">{copied ? "Copied" : "Copy"}</span>
+        <span className="hidden sm:inline">
+          {copied ? t("contact.copied") : t("contact.copy")}
+        </span>
         <span className="sr-only" role="status">
-          {copied ? `${label} copied to clipboard` : ""}
+          {copied ? t("contact.copiedStatus", { label }) : ""}
         </span>
       </Button>
     </div>

@@ -4,15 +4,12 @@ import { ArrowLeft, ArrowUpRight, MapPin } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { GitHubIcon, LinkedInIcon } from "@/components/icons";
 import { PrintButton } from "@/components/print-button";
-import {
-  certifications,
-  profile,
-  projects,
-  skillGroups,
-  systems,
-} from "@/lib/content";
+import { useI18n } from "@/i18n";
 
 export function ResumePage() {
+  const { certifications, profile, projects, skillGroups, systems, t } =
+    useI18n();
+
   return (
     <main className="mx-auto w-full max-w-3xl px-5 pt-28 pb-20 sm:pt-32">
       <Button
@@ -23,7 +20,7 @@ export function ResumePage() {
         className="mb-6 -ml-2 text-subtle hover:text-foreground"
       >
         <ArrowLeft data-icon="inline-start" aria-hidden="true" />
-        Back to portfolio
+        {t("common.backToPortfolio")}
       </Button>
 
       <article className="resume-sheet glass rounded-3xl p-6 sm:p-9">
@@ -54,7 +51,7 @@ export function ResumePage() {
                 href={profile.linkedin}
                 target="_blank"
                 rel="noreferrer noopener"
-                aria-label="LinkedIn"
+                aria-label={t("common.linkedinProfile")}
                 className="grid size-6 place-items-center rounded-md border border-hairline-strong text-subtle transition-colors hover:text-foreground"
               >
                 <LinkedInIcon className="size-3" />
@@ -63,7 +60,7 @@ export function ResumePage() {
                 href="https://github.com/FirliSatriya"
                 target="_blank"
                 rel="noreferrer noopener"
-                aria-label="GitHub"
+                aria-label={t("common.githubProfile")}
                 className="grid size-6 place-items-center rounded-md border border-hairline-strong text-subtle transition-colors hover:text-foreground"
               >
                 <GitHubIcon className="size-3" />
@@ -84,13 +81,13 @@ export function ResumePage() {
               nativeButton={false}
               className="border-hairline-strong"
             >
-              Email me
+              {t("common.emailMe")}
               <ArrowUpRight data-icon="inline-end" aria-hidden="true" />
             </Button>
           </div>
         </header>
 
-        <Section title="Experience & Projects">
+        <Section title={t("resume.experience")}>
           <ul className="grid gap-4">
             {projects.map((project) => (
               <li key={project.slug}>
@@ -116,7 +113,7 @@ export function ResumePage() {
           </ul>
         </Section>
 
-        <Section title="Skills">
+        <Section title={t("resume.skills")}>
           <dl className="grid gap-2.5">
             {skillGroups.map((group) => (
               <div key={group.id} className="grid grid-cols-1 gap-0.5 sm:grid-cols-[8rem_minmax(0,1fr)]">
@@ -131,7 +128,7 @@ export function ResumePage() {
           </dl>
         </Section>
 
-        <Section title="Method">
+        <Section title={t("resume.method")}>
           <ul className="grid gap-2">
             {systems.map((system) => (
               <li
@@ -147,7 +144,7 @@ export function ResumePage() {
           </ul>
         </Section>
 
-        <Section title="Credentials">
+        <Section title={t("resume.credentials")}>
           <ul className="grid gap-2">
             {certifications.map((cert) => (
               <li key={cert.name} className="text-[0.78rem] text-subtle">

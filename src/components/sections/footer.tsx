@@ -1,10 +1,11 @@
 import { Link } from "react-router";
 
 import { GitHubIcon, LinkedInIcon } from "@/components/icons";
-import { navLinks, profile } from "@/lib/content";
+import { useI18n } from "@/i18n";
 
 export function Footer() {
   const year = new Date().getFullYear();
+  const { navLinks, profile, t } = useI18n();
 
   return (
     <footer className="mt-14 border-t border-hairline">
@@ -26,7 +27,7 @@ export function Footer() {
 
           <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
             <nav
-              aria-label="Footer"
+              aria-label={t("nav.footer")}
               className="flex flex-wrap items-center gap-x-4 gap-y-2"
             >
               {navLinks.map((link) => (
@@ -50,7 +51,7 @@ export function Footer() {
                 href={profile.linkedin}
                 target="_blank"
                 rel="noreferrer noopener"
-                aria-label="LinkedIn profile"
+                aria-label={t("common.linkedinProfile")}
                 className="grid size-7 place-items-center rounded-lg border border-hairline bg-surface text-subtle transition-colors hover:border-hairline-strong hover:text-foreground"
               >
                 <LinkedInIcon className="size-3.5" />
@@ -59,7 +60,7 @@ export function Footer() {
                 href="https://github.com/FirliSatriya"
                 target="_blank"
                 rel="noreferrer noopener"
-                aria-label="GitHub profile"
+                aria-label={t("common.githubProfile")}
                 className="grid size-7 place-items-center rounded-lg border border-hairline bg-surface text-subtle transition-colors hover:border-hairline-strong hover:text-foreground"
               >
                 <GitHubIcon className="size-3.5" />

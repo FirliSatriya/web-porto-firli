@@ -52,8 +52,36 @@ export type Project = {
 
 export const projects: Project[] = [
   {
-    slug: "dss-mlbb",
+    slug: "telkom-internship",
     index: "01",
+    title: "UI/UX Design & AI Data Operations — Internship",
+    org: "Telkom Indonesia · BigBox",
+    tagline: "Executive dashboards, annotated ground truth, and model QA",
+    summary:
+      "Contributed to both product interface design and AI system quality assurance across enterprise and public-sector initiatives. Designed high-fidelity executive dashboards in Figma using a standardized design system, curated ground-truth datasets via manual bounding box annotation in Roboflow, and validated the real-world accuracy of OCR and CCTV-based computer vision models against manual benchmarks.",
+    role: "UI/UX Design & AI Data Operations",
+    year: "2025",
+    tone: "mid",
+    tags: ["UI/UX", "Design System", "Data Quality", "Model QA"],
+    stack: [
+      "Figma Design System",
+      "Roboflow",
+      "OCR Validation",
+      "CCTV CV QA",
+    ],
+    metrics: [
+      { label: "Period", value: "Sept–Dec" },
+      { label: "Disciplines", value: "UI/UX · AI" },
+      { label: "Org", value: "BigBox" },
+    ],
+    cover: {
+      src: "/projects/telkom-internship.svg",
+      alt: "Cover artwork for the Telkom Indonesia BigBox internship: the Telkom and BigBox logos side by side, an executive dashboard sketch and a CCTV frame with bounding-box annotations.",
+    },
+  },
+  {
+    slug: "dss-mlbb",
+    index: "02",
     title: "Decision Support System — MLBB Hero Selection",
     org: "Applied Research",
     tagline: "AHP + SAW recommendation engine across 132 heroes",
@@ -79,7 +107,7 @@ export const projects: Project[] = [
   },
   {
     slug: "maccessoris",
-    index: "02",
+    index: "03",
     title: "MAccessoris",
     org: "Online Store",
     tagline: "Clean store catalogue with filtered discovery and fast checkout",
@@ -104,7 +132,7 @@ export const projects: Project[] = [
   },
   {
     slug: "firelle",
-    index: "03",
+    index: "04",
     title: "FIRELLE — Point of Sale System",
     org: "FIRELLE",
     tagline: "A boutique point-of-sale system with a live demo login",
@@ -129,7 +157,7 @@ export const projects: Project[] = [
   },
   {
     slug: "photobooth-remote",
-    index: "04",
+    index: "05",
     title: "Photobooth Remote — WebRTC Photo Booth",
     org: "Personal Project",
     tagline: "A virtual photobooth strip for 2–4 people in different cities",
@@ -152,6 +180,29 @@ export const projects: Project[] = [
       alt: "Screenshot preview of the Photobooth Remote landing page for its WebRTC photo booth.",
     },
   },
+  {
+    slug: "basarnas-bhris",
+    index: "06",
+    title: "BHRIS — QR Attendance & Leave Application",
+    org: "BASARNAS Surabaya · Juanda",
+    tagline: "Two internal HRIS features, designed in Figma then shipped as code",
+    summary:
+      "Designed and developed two new core features for the BHRIS website at BASARNAS Surabaya — QR Code Meeting Attendance and a Leave Application System — to cut manual steps out of internal staff administration. Both features started as end-to-end interactive Figma prototypes, then became clean, responsive web components that hold up across devices.",
+    role: "UI/UX Design & Front-End",
+    year: "2024",
+    tone: "mid",
+    tags: ["UI/UX", "HRIS", "Design-to-Code", "QR Attendance"],
+    stack: ["Figma Prototyping", "Responsive Web Components", "Internal HRIS"],
+    metrics: [
+      { label: "Features shipped", value: "2" },
+      { label: "Location", value: "Juanda" },
+      { label: "Org", value: "BASARNAS" },
+    ],
+    cover: {
+      src: "/projects/basarnas-bhris.svg",
+      alt: "Cover artwork for the BASARNAS Surabaya BHRIS internship: the BASARNAS emblem beside a QR attendance panel and a leave-application form.",
+    },
+  },
 ];
 
 export type SkillGroupId = "frontend" | "uiux" | "data" | "database" | "cert";
@@ -170,11 +221,12 @@ export const skillGroups: {
       blurb: "Interfaces that stay fast under real data",
       skills: [
         "React.js",
-        "Next.js",
         "TypeScript",
+        "JavaScript",
         "Tailwind CSS",
         "HTML/CSS",
-        "JavaScript",
+        "WebRTC P2P",
+        "Canvas · WebGL2",
       ],
     },
     {
@@ -184,9 +236,9 @@ export const skillGroups: {
       blurb: "Design systems that survive handoff",
       skills: [
         "Figma Design System",
-        "Auto-Layout",
         "Interactive Prototyping",
-        "Design Thinking",
+        "Auto-Layout",
+        "Design-to-Code",
       ],
     },
     {
@@ -194,14 +246,22 @@ export const skillGroups: {
       label: "Data & AI",
       tone: "low",
       blurb: "Algorithms that justify their ranking",
-      skills: ["Python", "SQL", "AHP-SAW MCDM", "OCR Quality Control", "EDA"],
+      skills: [
+        "Python",
+        "Flask",
+        "NumPy",
+        "AHP-SAW MCDM",
+        "OCR Quality Control",
+        "Roboflow Annotation",
+        "Model QA",
+      ],
     },
     {
       id: "database",
       label: "Database",
       tone: "mid",
       blurb: "Schema choices that keep queries honest",
-      skills: ["PostgreSQL", "MySQL"],
+      skills: ["SQL", "PostgreSQL", "MySQL"],
     },
     {
       id: "cert",
@@ -235,11 +295,25 @@ export const systems = [
     icon: "store",
   },
   {
+    title: "Ground-truth quality loop",
+    detail:
+      "Bounding-box annotation in Roboflow, then OCR and CCTV model output checked against manual benchmarks — accuracy measured on real footage instead of assumed from a validation split.",
+    tone: "mid" as Tone,
+    icon: "scan",
+  },
+  {
     title: "Real-time capture pipeline",
     detail:
       "WebRTC peer-to-peer rooms with a clock-calibrated countdown, so every shutter fires on the same frame — then the strip is composited on the GPU into a PNG or boomerang MP4.",
     tone: "high" as Tone,
     icon: "capture",
+  },
+  {
+    title: "Scan-to-verify admin flows",
+    detail:
+      "QR meeting attendance that replaces a paper signature with one tap and an auditable timestamp, plus a leave request path that moves through approval instead of email threads — both prototyped end-to-end in Figma before being shipped as responsive components.",
+    tone: "low" as Tone,
+    icon: "qr",
   },
 ];
 
