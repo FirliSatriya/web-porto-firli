@@ -5,18 +5,38 @@ export const profile = {
   credential: "S.Tr.Kom.",
   title:
     "Applied Informatics Engineer & BNSP Certified Associate Data Scientist",
+  /** Header line on the résumé; matches the ATS PDF, not the site positioning. */
+  resumeTitle: "UI/UX Designer | Front-End Developer | AI Data Operations",
   availability: "Available for Front-End & UI/UX Roles",
   headline: "Turning Complex Workflows & Data into Effortless Interfaces",
   bio: "Hi, I'm Firli Satriya Putri, S.Tr.Kom. Applied Informatics graduate from Universitas Airlangga and BNSP-Certified Associate Data Scientist. Experienced in revamping enterprise HRIS interfaces and shipping new features at BASARNAS, as well as contributing to UI/UX design and data quality operations at Telkom Indonesia.",
+  /** ATS professional summary. Mirrors the PDF so the web résumé cannot drift. */
+  summary:
+    "Informatics Engineering graduate from Universitas Airlangga (S.Tr.Kom, GPA 3.43/4.00) with hands-on experience in UI/UX design, front-end web development, AI data operations, and large-scale field program coordination. Proven track record in building standardized Figma design systems, developing responsive web applications (React.js, TypeScript, Tailwind CSS, WebRTC), executing ground-truth data annotation and model quality assurance, and leading cross-stakeholder digital operations.",
   email: "firliwork2026@gmail.com",
   phone: "+62 881 0373 18755",
   phoneHref: "+62881037318755",
   linkedin: "https://www.linkedin.com/in/firli-satriya",
   linkedinLabel: "linkedin.com/in/firli-satriya",
+  github: "https://github.com/FirliSatriya",
+  githubLabel: "github.com/FirliSatriya",
   location: "Surabaya, Indonesia",
   university: "Universitas Airlangga",
   degree: "Bachelor of Applied Informatics Engineering",
+  gpa: "3.43 / 4.00",
+  educationPeriod: "2022 – 2026",
+  languages: [
+    "Bahasa Indonesia (Native)",
+    "English (Intermediate — Professional Working Proficiency)",
+  ],
 } as const;
+
+/**
+ * The ATS-friendly PDF is the canonical résumé artifact. Kept next to the
+ * profile so the hero CTA and the résumé page can never point at different
+ * files.
+ */
+export const resumePdfHref = "/cv/firli-satriya-putri-cv.pdf";
 
 export const navLinks = [
   // Root-relative so the same list works from /gallery and /resume, not just
@@ -48,6 +68,14 @@ export type Project = {
   /** Live deployment. Cards with this become clickable links. */
   liveUrl?: string;
   flagship?: boolean;
+  /** Résumé view: internships sit under Experience, self-directed work under Projects. */
+  resume: {
+    section: "experience" | "project";
+    /** Human-readable period, e.g. "Sept – Dec 2025". */
+    period: string;
+    /** Scannable one-line outcomes, not prose. */
+    bullets: string[];
+  };
 };
 
 export const projects: Project[] = [
@@ -78,10 +106,51 @@ export const projects: Project[] = [
       src: "/projects/telkom-internship.svg",
       alt: "Cover artwork for the Telkom Indonesia BigBox internship: the Telkom and BigBox logos side by side, an executive dashboard sketch and a CCTV frame with bounding-box annotations.",
     },
+    resume: {
+      section: "experience",
+      period: "Sept – Dec 2025",
+      bullets: [
+        "Designed high-fidelity executive dashboards in Figma on a standardized design system.",
+        "Curated ground-truth datasets through manual bounding-box annotation in Roboflow.",
+        "Validated OCR and CCTV computer-vision models against manual benchmarks to measure real-world accuracy.",
+      ],
+    },
+  },
+  {
+    slug: "basarnas-bhris",
+    index: "02",
+    title: "BHRIS — QR Attendance & Leave Application",
+    org: "BASARNAS Surabaya · Juanda",
+    tagline: "Two internal HRIS features, designed in Figma then shipped as code",
+    summary:
+      "Designed and developed two new core features for the BHRIS website at BASARNAS Surabaya — QR Code Meeting Attendance and a Leave Application System — to cut manual steps out of internal staff administration. Both features started as end-to-end interactive Figma prototypes, then became clean, responsive web components that hold up across devices.",
+    role: "UI/UX Design & Front-End",
+    year: "2026",
+    tone: "mid",
+    tags: ["UI/UX", "HRIS", "Design-to-Code", "QR Attendance"],
+    stack: ["Figma Prototyping", "Responsive Web Components", "Internal HRIS"],
+    metrics: [
+      { label: "Features shipped", value: "2" },
+      { label: "Location", value: "Juanda" },
+      { label: "Org", value: "BASARNAS" },
+    ],
+    cover: {
+      src: "/projects/basarnas-bhris.svg",
+      alt: "Cover artwork for the BASARNAS Surabaya BHRIS internship: the BASARNAS emblem beside a QR attendance panel and a leave-application form.",
+    },
+    resume: {
+      section: "experience",
+      period: "Mar – Jul 2026",
+      bullets: [
+        "Designed and developed two core BHRIS features — QR Code Meeting Attendance and a Leave Application System — to cut manual steps out of internal staff administration.",
+        "Started both as end-to-end interactive Figma prototypes, then shipped them as clean, responsive web components that hold up across devices.",
+        "Replaced paper signatures and email-thread leave requests with auditable, single-tap flows.",
+      ],
+    },
   },
   {
     slug: "dss-mlbb",
-    index: "02",
+    index: "03",
     title: "Decision Support System — MLBB Hero Selection",
     org: "Applied Research",
     tagline: "AHP + SAW recommendation engine across 132 heroes",
@@ -104,10 +173,19 @@ export const projects: Project[] = [
       alt: "Screenshot preview of the MLBB hero-selection decision support system, with its ranking interface.",
     },
     flagship: true,
+    resume: {
+      section: "project",
+      period: "2025",
+      bullets: [
+        "Built an AHP + SAW recommendation engine that scores and ranks all 132 Mobile Legends heroes.",
+        "Derived criteria weights from pairwise comparisons and checked them against a consistency ratio.",
+        "Streamed ranked results from a Flask API into a responsive, match-speed interface.",
+      ],
+    },
   },
   {
     slug: "maccessoris",
-    index: "03",
+    index: "04",
     title: "MAccessoris",
     org: "Online Store",
     tagline: "Clean store catalogue with filtered discovery and fast checkout",
@@ -129,10 +207,18 @@ export const projects: Project[] = [
       fallback: "/projects/maccessoris.svg",
       alt: "Screenshot preview of the MAccessoris storefront, showing its catalogue of products.",
     },
+    resume: {
+      section: "project",
+      period: "2023",
+      bullets: [
+        "Built a catalogue with filters that stay responsive as inventory grows.",
+        "Trimmed checkout to three steps so browsing turns into buying without friction.",
+      ],
+    },
   },
   {
     slug: "firelle",
-    index: "04",
+    index: "05",
     title: "FIRELLE — Point of Sale System",
     org: "FIRELLE",
     tagline: "A boutique point-of-sale system with a live demo login",
@@ -154,10 +240,18 @@ export const projects: Project[] = [
       fallback: "/projects/firelle.svg",
       alt: "Screenshot preview of the FIRELLE point-of-sale login screen.",
     },
+    resume: {
+      section: "project",
+      period: "2026",
+      bullets: [
+        "Built a boutique point-of-sale covering product management, checkout and transaction records in one place.",
+        "Shipped a browser-side demo mode so the full flow can be tried without an account.",
+      ],
+    },
   },
   {
     slug: "photobooth-remote",
-    index: "05",
+    index: "06",
     title: "Photobooth Remote — WebRTC Photo Booth",
     org: "Personal Project",
     tagline: "A virtual photobooth strip for 2–4 people in different cities",
@@ -179,28 +273,13 @@ export const projects: Project[] = [
       fallback: "/projects/photobooth.svg",
       alt: "Screenshot preview of the Photobooth Remote landing page for its WebRTC photo booth.",
     },
-  },
-  {
-    slug: "basarnas-bhris",
-    index: "06",
-    title: "BHRIS — QR Attendance & Leave Application",
-    org: "BASARNAS Surabaya · Juanda",
-    tagline: "Two internal HRIS features, designed in Figma then shipped as code",
-    summary:
-      "Designed and developed two new core features for the BHRIS website at BASARNAS Surabaya — QR Code Meeting Attendance and a Leave Application System — to cut manual steps out of internal staff administration. Both features started as end-to-end interactive Figma prototypes, then became clean, responsive web components that hold up across devices.",
-    role: "UI/UX Design & Front-End",
-    year: "2024",
-    tone: "mid",
-    tags: ["UI/UX", "HRIS", "Design-to-Code", "QR Attendance"],
-    stack: ["Figma Prototyping", "Responsive Web Components", "Internal HRIS"],
-    metrics: [
-      { label: "Features shipped", value: "2" },
-      { label: "Location", value: "Juanda" },
-      { label: "Org", value: "BASARNAS" },
-    ],
-    cover: {
-      src: "/projects/basarnas-bhris.svg",
-      alt: "Cover artwork for the BASARNAS Surabaya BHRIS internship: the BASARNAS emblem beside a QR attendance panel and a leave-application form.",
+    resume: {
+      section: "project",
+      period: "2026",
+      bullets: [
+        "Built a WebRTC photobooth room joinable by link and a 6-digit code, with no install or login.",
+        "Fired every shutter on the same frame with a clock-calibrated countdown, then composited the strip on the GPU into PNG or boomerang MP4.",
+      ],
     },
   },
 ];
@@ -258,10 +337,10 @@ export const skillGroups: {
     },
     {
       id: "database",
-      label: "Database",
+      label: "Database & Tools",
       tone: "mid",
       blurb: "Schema choices that keep queries honest",
-      skills: ["SQL", "PostgreSQL", "MySQL"],
+      skills: ["SQL", "PostgreSQL", "MySQL", "Git/GitHub", "VS Code"],
     },
     {
       id: "cert",
@@ -329,5 +408,97 @@ export const certifications = [
     issuer: "Universitas Airlangga",
     period: "S.Tr.Kom.",
     tone: "low" as Tone,
+  },
+];
+
+export type CommitteeEntry = {
+  title: string;
+  org: string;
+  period: string;
+  detail: string;
+};
+
+/**
+ * Committees, organizations and training. These never appear on the portfolio
+ * landing page — they exist so the résumé matches the ATS PDF, which lists
+ * them newest-first after Education.
+ */
+export const committees: CommitteeEntry[] = [
+  {
+    title: "Field Operations & Digital Registration",
+    org: "Badan Gizi Nasional · Surabaya",
+    period: "Mar 2026",
+    detail:
+      "Managed field operations, oversaw digital registration (website), and coordinated consultation flows for large-scale participant groups in the National Nutrition Agency's nutrition outreach program, involving stakeholders at the regional and village levels.",
+  },
+  {
+    title: "Associate Data Scientist Training",
+    org: "Kementerian Komunikasi Digital · Surabaya",
+    period: "Jun 2025",
+    detail:
+      "Completed an Associate Data Scientist program focused on digital infrastructure, media literacy, and national digital transformation; awarded a Competency Certificate in Data Science (BNSP Certified Associate Data Scientist, 2025–2028) covering data analysis, machine learning, and data-driven problem solving.",
+  },
+  {
+    title: "Student Exchange Program",
+    org: "Universiti Teknologi MARA (UiTM) Kedah, Malaysia",
+    period: "Mar 2025",
+    detail:
+      "Selected as a student representative for a two-week exchange at UiTM Kedah, gaining insight into IoT, digital libraries and smart systems while strengthening cross-cultural communication and adaptability.",
+  },
+  {
+    title: "Publication & Documentation Staff",
+    org: "Airlangga E-Sports Championships x PIMNAS",
+    period: "Oct 2024",
+    detail:
+      "Created visual content, event branding, and promotional materials to lift audience engagement while keeping one visual identity across media platforms.",
+  },
+  {
+    title: "Public Relations Coordinator",
+    org: "PUBG Mobile Campus Cup",
+    period: "Sept 2024",
+    detail:
+      "Managed communication between the event and its audience, handled media outreach, and executed promotional campaigns.",
+  },
+  {
+    title: "Research Presenter",
+    org: "Konferensi Nasional Vokasi",
+    period: "Sept 2024",
+    detail:
+      "Presented “Pendekatan Nutrisi untuk Pemulihan Hipertensi melalui Rekomendasi Konsumsi Makanan dengan Metode K-Means Clustering dan Decision Tree”.",
+  },
+  {
+    title: "Public Relations Staff",
+    org: "Airlangga E-Sports League x GoPay",
+    period: "May 2024",
+    detail:
+      "Managed event communication, coordinated with partners and participants, and drove promotion across multiple media channels.",
+  },
+  {
+    title: "Public Relations & Web Management Staff",
+    org: "UKM E-Sports UNAIR",
+    period: "2024",
+    detail:
+      "Oversaw communication strategy, managed partnerships, and promoted community events; maintained the official UNAIR Esports website so content stayed current, visually coherent, and easy to find.",
+  },
+  {
+    title: "IT Networking — Operating Systems",
+    org: "Cisco Networking Academy",
+    period: "2023",
+    detail:
+      "Completed the Cisco Networking Academy program in IT Networking and earned a certificate for finishing the Operating Systems course within five months.",
+  },
+  {
+    title: "Secretariat Staff",
+    org: "HIMTI GOIN 2023",
+    period: "2023",
+    detail:
+      "Handled administrative tasks, coordinated event documentation, and supported smooth logistical execution across the event team.",
+  },
+  {
+    title: "Event Staff — Master of Ceremonies",
+    org: "Inisialisasi 2023",
+    period: "2023",
+    detail:
+      "Guided event flow, engaged the audience, and kept the program on schedule through public speaking and real-time adaptability.",
   },
 ];

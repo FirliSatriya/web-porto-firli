@@ -57,7 +57,7 @@ export function Footer() {
                 <LinkedInIcon className="size-3.5" />
               </a>
               <a
-                href="https://github.com/FirliSatriya"
+                href={profile.github}
                 target="_blank"
                 rel="noreferrer noopener"
                 aria-label={t("common.githubProfile")}

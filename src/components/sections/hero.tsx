@@ -11,13 +11,14 @@ import {
   ArrowDown,
   ArrowUpRight,
   Braces,
-  Download,
+  FileText,
   MousePointerClick,
   Sparkles,
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { useZeroG } from "@/components/zero-g-provider";
+import { resumePdfHref } from "@/lib/content";
 import { useI18n } from "@/i18n";
 import type { MessageKey } from "@/i18n/messages";
 
@@ -74,13 +75,19 @@ export function Hero() {
             </Button>
 
             <Button
-              render={<a href="/resume" />}
+              render={
+                <a
+                  href={resumePdfHref}
+                  target="_blank"
+                  rel="noreferrer noopener"
+                />
+              }
               nativeButton={false}
               variant="ghost"
               size="lg"
               className="h-11 w-full rounded-full border border-hairline-strong px-6 text-[0.86rem] font-medium text-foreground hover:bg-surface-2 sm:w-auto"
             >
-              <Download data-icon="inline-start" aria-hidden="true" />
+              <FileText data-icon="inline-start" aria-hidden="true" />
               {t("hero.ctaResume")}
             </Button>
           </div>

@@ -15,7 +15,7 @@
   <rect width="1200" height="675" fill="url(#grid6)"/>
 
   <text x="72" y="86" fill="#787878" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="15" letter-spacing="2.7">BHRIS / BASARNAS SURABAYA &#183; JUANDA</text>
-  <text x="1128" y="86" text-anchor="end" fill="#787878" fill-opacity="0.55" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="13" letter-spacing="2.3">FIG. 06</text>
+  <text x="1128" y="86" text-anchor="end" fill="#787878" fill-opacity="0.55" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="13" letter-spacing="2.3">FIG. 02</text>
   <line x1="72" y1="108" x2="1128" y2="108" stroke="#1c1c1c" stroke-opacity="0.18"/>
 
   <!-- identity panel -->

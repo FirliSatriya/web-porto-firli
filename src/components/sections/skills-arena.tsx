@@ -1,13 +1,6 @@
 import * as React from "react";
 import { AnimatePresence, motion } from "motion/react";
-import {
-  Hand,
-  Minus,
-  Orbit,
-  Plus,
-  RotateCcw,
-  Sparkles,
-} from "lucide-react";
+import { Hand, Orbit, RotateCcw, Sparkles } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { ButtonGroup } from "@/components/ui/button-group";
@@ -35,10 +28,7 @@ type Pill = PillSeed & {
   tone: Tone;
 };
 
-type PillContent = Omit<Pill, "x" | "y" | "width" | "height"> & {
-  width: number;
-  height: number;
-};
+type PillContent = Omit<Pill, "x" | "y">;
 
 type SelectedGroup = "all" | SkillGroupId;
 
@@ -71,12 +61,75 @@ function buildPills(
     );
 }
 
+/**
+ * Lay the pills out on a coarse grid so the first frame is already spread out
+ * instead of stacked in one corner.
+ */
+function seedPills(
+  items: PillContent[],
+  width: number,
+  height: number,
+): Pill[] {
+  // Never use more columns than there are pills: a filter with four pills should
+  // spread them across the whole width instead of stacking them on the left.
+  const cols = Math.max(1, Math.min(items.length, Math.round(width / 190)));
+  // Enough rows that every pill gets its own cell instead of wrapping onto
+  // the same top row and stacking.
+  const rows = Math.max(
+    1,
+    Math.min(
+      Math.ceil(items.length / cols),
+      Math.max(1, Math.floor(height / 58)),
+    ),
+  );
+
+  return items.map((item, index) => {
+    const col = index % cols;
+    const row = Math.floor(index / cols) % rows;
+    const cellW = width / cols;
+    const cellH = height / rows;
+
+    const pillWidth = Math.min(item.width, Math.max(96, width - 16));
+    const pillHeight = item.height;
+
+    // Deterministic jitter, not Math.random(): the seed must be stable across
+    // re-renders so pills do not jump.
+    const jitter = hashJitter(item.id);
+
+    // Seeded pills can be rotated, so reserve the rotated bounds or the first
+    // frame starts half-clipped.
+    const seedAngle = 0.14;
+    const cos = Math.cos(seedAngle);
+    const sin = Math.sin(seedAngle);
+    const halfW = (pillWidth * cos + pillHeight * sin) / 2;
+    const halfH = (pillWidth * sin + pillHeight * cos) / 2;
+
+    return {
+      ...item,
+      width: pillWidth,
+      height: pillHeight,
+      x: clamp(
+        cellW * col + cellW / 2 + jitter.x * 22,
+        halfW + 4,
+        Math.max(halfW + 4, width - halfW - 4),
+      ),
+      y: clamp(
+        cellH * row + cellH / 2 + jitter.y * 18,
+        halfH + 4,
+        Math.max(halfH + 4, height - halfH - 4),
+      ),
+    };
+  });
+}
+
 export function SkillsArena() {
   const { zeroG, setZeroG, reducedMotion } = useZeroG();
   const { skillGroups, t } = useI18n();
   const [filter, setFilter] = React.useState<SelectedGroup>("all");
-  const [density, setDensity] = React.useState(1);
-  const [hovered, setHovered] = React.useState<string | null>(null);
+  const [hovered, setHovered] = React.useState<{
+    id: string;
+    text: string;
+  } | null>(null);
   const resetRef = React.useRef<(() => void) | null>(null);
 
   return (
@@ -126,25 +179,6 @@ export function SkillsArena() {
           </ButtonGroup>
 
           <div className="ml-auto flex items-center gap-2">
-            <ButtonGroup aria-label={t("arena.sizeAria")}>
-              <Button
-                size="icon-sm"
-                variant="ghost"
-                onClick={() => setDensity((d) => Math.max(0.8, +(d - 0.1).toFixed(2)))}
-                aria-label={t("arena.shrink")}
-              >
-                <Minus />
-              </Button>
-              <Button
-                size="icon-sm"
-                variant="ghost"
-                onClick={() => setDensity((d) => Math.min(1.35, +(d + 0.1).toFixed(2)))}
-                aria-label={t("arena.enlarge")}
-              >
-                <Plus />
-              </Button>
-            </ButtonGroup>
-
             <Button
               size="icon-sm"
               variant="ghost"
@@ -181,8 +215,7 @@ export function SkillsArena() {
           filter={filter}
           zeroG={zeroG}
           reducedMotion={reducedMotion}
-          density={density}
-          hovered={hovered}
+          hoveredId={hovered?.id ?? null}
           setHovered={setHovered}
           resetRef={resetRef}
         />
@@ -197,7 +230,7 @@ export function SkillsArena() {
             {zeroG ? t("arena.weightless") : t("arena.gravity")}
           </span>
           <span className="ml-auto font-mono text-[0.6rem]">
-            {hovered ?? t("arena.physics")}
+            {hovered?.text ?? t("arena.physics")}
           </span>
         </div>
       </div>
@@ -209,31 +242,27 @@ function ArenaCanvas({
   filter,
   zeroG,
   reducedMotion,
-  density,
-  hovered,
+  hoveredId,
   setHovered,
   resetRef,
 }: {
   filter: SelectedGroup;
   zeroG: boolean;
   reducedMotion: boolean;
-  density: number;
-  hovered: string | null;
-  setHovered: (value: string | null) => void;
+  hoveredId: string | null;
+  setHovered: (value: { id: string; text: string } | null) => void;
   resetRef: React.RefObject<(() => void) | null>;
 }) {
   const { skillGroups, t } = useI18n();
   const containerRef = React.useRef<HTMLDivElement>(null);
   const [size, setSize] = React.useState({ width: 0, height: 0 });
-  const [positions, setPositions] = React.useState<Record<string, PillState>>({});
+  const [positions, setPositions] = React.useState<
+    Record<string, PillState>
+  >({});
   const [dragging, setDragging] = React.useState<string | null>(null);
 
-  const workerRef = React.useRef<Worker | null>(null);
   const worldRef = React.useRef<PillWorld | null>(null);
-  const pillsRef = React.useRef<Pill[]>([]);
-  const rafRef = React.useRef<number | null>(null);
-  const lastRef = React.useRef(0);
-  const dragInfo = React.useRef<{
+  const dragRef = React.useRef<{
     id: string;
     lastX: number;
     lastY: number;
@@ -241,13 +270,26 @@ function ArenaCanvas({
     vx: number;
     vy: number;
   } | null>(null);
-
-  // Measured pill sizes are needed before seeding positions.
-  const measureRefs = React.useRef(new Map<string, HTMLDivElement>());
+  /** The simulation effect must not re-run when only the toggle flips. */
+  const zeroGRef = React.useRef(zeroG);
+  const reducedMotionRef = React.useRef(reducedMotion);
+  /** Signature of the pill set currently in the world. */
+  const signatureRef = React.useRef<string | null>(null);
 
   const items = React.useMemo(
     () => buildPills(filter, skillGroups),
     [filter, skillGroups],
+  );
+
+  /** Which pill set is currently in the simulation. */
+  const signature = React.useMemo(
+    () => items.map((item) => item.id).join("|"),
+    [items],
+  );
+
+  const seeds = React.useMemo(
+    () => seedPills(items, size.width || 900, size.height || 420),
+    [items, size.width, size.height],
   );
 
   /* ---------- size tracking ---------- */
@@ -257,178 +299,83 @@ function ArenaCanvas({
 
     const observer = new ResizeObserver(([entry]) => {
       const { width, height } = entry.contentRect;
-      setSize({ width, height });
+      setSize((current) =>
+        current.width === width && current.height === height
+          ? current
+          : { width, height },
+      );
     });
 
     observer.observe(node);
     return () => observer.disconnect();
   }, []);
 
-  /* ---------- seed positions ---------- */
-  const seeds = React.useMemo<Pill[]>(() => {
-    const width = size.width || 900;
-    const height = size.height || 420;
-    const cols = Math.max(2, Math.round(width / 190));
-    // Enough rows that every pill gets its own cell instead of wrapping onto
-    // the same top row and stacking.
-    const rows = Math.max(
-      2,
-      Math.min(
-        Math.ceil(items.length / cols),
-        Math.max(2, Math.floor(height / 58)),
-      ),
-    );
-
-    return items.map((item, index) => {
-      const col = index % cols;
-      const row = Math.floor(index / cols) % rows;
-      const cellW = width / cols;
-      const cellH = height / rows;
-
-      const measured = measureRefs.current.get(item.id);
-      const maxPillWidth = Math.max(96, width - 16);
-      const pillWidth = Math.min(
-        (measured?.offsetWidth ?? item.width) * density,
-        maxPillWidth,
-      );
-      const pillHeight = (measured?.offsetHeight ?? item.height) * density;
-
-      // Deterministic jitter, not Math.random(): the seed must be stable across
-      // re-renders so pills do not jump when the arena re-measures.
-      const jitter = hashJitter(item.id);
-
-      // Seeded pills are rotated up to ±0.22rad, so reserve the rotated bounds
-      // or the first frame starts half-clipped.
-      const seedAngle = 0.14;
-      const cos = Math.cos(seedAngle);
-      const sin = Math.sin(seedAngle);
-      const halfW = (pillWidth * cos + pillHeight * sin) / 2;
-      const halfH = (pillWidth * sin + pillHeight * cos) / 2;
-
-      return {
-        ...item,
-        width: pillWidth,
-        height: pillHeight,
-        x: clamp(
-          cellW * col + cellW / 2 + jitter.x * 22,
-          halfW + 4,
-          Math.max(halfW + 4, width - halfW - 4),
-        ),
-        y: clamp(
-          cellH * row + cellH / 2 + jitter.y * 18,
-          halfH + 4,
-          Math.max(halfH + 4, height - halfH - 4),
-        ),
-      };
-    });
-  }, [items, size.width, size.height, density]);
-
-  /* ---------- boot the simulation ---------- */
+  /* ---------- zero-g toggle, without tearing the simulation down ---------- */
   React.useEffect(() => {
-    if (!size.width || !size.height) return;
-
-    pillsRef.current = seeds;
-
-    const seedsPayload = seeds.map(({ id, width, height, x, y }) => ({
-      id,
-      width,
-      height,
-      x,
-      y,
-    }));
-
-    // Worker is the fast path; a same-thread world keeps it usable when
-    // workers or the bundler's worker transform are unavailable.
-    if (!workerRef.current && typeof Worker !== "undefined") {
-      try {
-        const worker = new Worker(
-          new URL("../../lib/physics/worker.ts", import.meta.url),
-          { type: "module" },
-        );
-        worker.onmessage = (event: MessageEvent<{ type: string; pills: PillState[] }>) => {
-          if (event.data?.type === "tick") {
-            setPositions(
-              Object.fromEntries(event.data.pills.map((pill) => [pill.id, pill])),
-            );
-          }
-        };
-        workerRef.current = worker;
-      } catch {
-        workerRef.current = null;
-      }
-    }
-
-    if (workerRef.current) {
-      workerRef.current.postMessage({
-        type: "init",
-        width: size.width,
-        height: size.height,
-        pills: seedsPayload,
-        zeroG,
-      });
-    } else {
-      const world = new PillWorld((message) => {
-        if (message.type === "tick") {
-          setPositions(
-            Object.fromEntries(message.pills.map((pill) => [pill.id, pill])),
-          );
-        }
-      });
-      world.init(size.width, size.height, seedsPayload, zeroG);
-      worldRef.current = world;
-    }
-
-    return () => {
-      if (rafRef.current) cancelAnimationFrame(rafRef.current);
-      rafRef.current = null;
-      lastRef.current = 0;
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [seeds, size.width, size.height]);
-
-  /* ---------- animation clock ---------- */
-  React.useEffect(() => {
-    if (reducedMotion) return;
-
-    const tick = (now: number) => {
-      const dt = lastRef.current ? now - lastRef.current : 16.667;
-      lastRef.current = now;
-
-      const worker = workerRef.current;
-      const world = worldRef.current;
-
-      if (worker) {
-        worker.postMessage({ type: "step", dt });
-      } else if (world) {
-        world.step(dt);
-      }
-
-      rafRef.current = requestAnimationFrame(tick);
-    };
-
-    rafRef.current = requestAnimationFrame(tick);
-    return () => {
-      if (rafRef.current) cancelAnimationFrame(rafRef.current);
-      rafRef.current = null;
-      lastRef.current = 0;
-    };
-  }, [reducedMotion]);
-
-  /* ---------- react to toggles ---------- */
-  React.useEffect(() => {
-    workerRef.current?.postMessage({ type: "toggle", zeroG });
+    zeroGRef.current = zeroG;
     worldRef.current?.setZeroG(zeroG);
   }, [zeroG]);
 
+  /* ---------- reduced motion: keep drags alive, drop the ambient drift ------ */
+  React.useEffect(() => {
+    reducedMotionRef.current = reducedMotion;
+    worldRef.current?.setStill(reducedMotion);
+  }, [reducedMotion]);
+
+  /* ---------- the world follows the pill set, never the window size --------- */
   React.useEffect(() => {
     if (!size.width || !size.height) return;
-    workerRef.current?.postMessage({
-      type: "resize",
-      width: size.width,
-      height: size.height,
-    });
+    if (signatureRef.current === signature && worldRef.current) return;
+
+    signatureRef.current = signature;
+    const layout = seedPills(items, size.width, size.height).map(
+      ({ id, width, height, x, y }) => ({ id, width, height, x, y }),
+    );
+
+    const world = worldRef.current;
+    if (world) {
+      // A filter change re-seeds in place, so the running loop keeps its target.
+      world.reset(layout, zeroGRef.current);
+    } else {
+      const created = new PillWorld(
+        size.width,
+        size.height,
+        layout,
+        zeroGRef.current,
+      );
+      created.setStill(reducedMotionRef.current);
+      worldRef.current = created;
+    }
+  }, [items, signature, size.width, size.height]);
+
+  /* ---------- resize just re-bounds the field; pills keep their place ------ */
+  React.useEffect(() => {
     worldRef.current?.resize(size.width, size.height);
   }, [size.width, size.height]);
+
+  /* ---------- one animation loop for the lifetime of the arena ------------ */
+  React.useEffect(() => {
+    let raf = 0;
+    let last = 0;
+
+    const tick = (now: number) => {
+      const dt = last ? now - last : 16.667;
+      last = now;
+
+      const world = worldRef.current;
+      if (world) {
+        const next = world.step(dt);
+        if (next) {
+          setPositions(Object.fromEntries(next.map((pill) => [pill.id, pill])));
+        }
+      }
+
+      raf = requestAnimationFrame(tick);
+    };
+
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
+  }, []);
 
   /* ---------- pointer plumbing ---------- */
   const toLocal = (event: React.PointerEvent) => {
@@ -441,179 +388,163 @@ function ArenaCanvas({
     const { x, y } = toLocal(event);
 
     if (dragging) {
-      const now = performance.now();
-      const info = dragInfo.current;
+      const info = dragRef.current;
 
       if (info) {
-        const dt = Math.max(now - info.lastT, 8);
-        // Smoothed velocity so the fling follows the last real gesture.
+        // Pointer events carry their own high-res timestamp, so the fling can be
+        // measured without touching the (impure) clock during render.
+        const dt = Math.max(event.timeStamp - info.lastT, 8);
         info.vx = (x - info.lastX) / dt;
         info.vy = (y - info.lastY) / dt;
         info.lastX = x;
         info.lastY = y;
-        info.lastT = now;
+        info.lastT = event.timeStamp;
       }
 
-      workerRef.current?.postMessage({
-        type: "drag",
-        id: dragging,
-        pointerX: x,
-        pointerY: y,
-      });
       worldRef.current?.drag(dragging, x, y);
       return;
     }
 
-    workerRef.current?.postMessage({ type: "pointer", x, y });
     worldRef.current?.setPointer(x, y);
   };
 
   const onPointerLeave = () => {
-    workerRef.current?.postMessage({ type: "pointer-leave" });
+    if (dragging) return;
     worldRef.current?.clearPointer();
   };
 
   const startDrag = (id: string, event: React.PointerEvent) => {
     event.preventDefault();
-    (event.target as HTMLElement).setPointerCapture?.(event.pointerId);
+    (event.currentTarget as HTMLElement).setPointerCapture?.(event.pointerId);
+
     const { x, y } = toLocal(event);
-    setDragging(id);
-    dragInfo.current = {
+    dragRef.current = {
       id,
       lastX: x,
       lastY: y,
-      lastT: performance.now(),
+      lastT: event.timeStamp,
       vx: 0,
       vy: 0,
     };
 
-    workerRef.current?.postMessage({ type: "grab", id, pointerX: x, pointerY: y });
+    setDragging(id);
     worldRef.current?.grab(id, x, y);
   };
 
   const endDrag = () => {
     if (!dragging) return;
 
-    const fling = dragInfo.current;
+    const fling = dragRef.current;
+    // Per-millisecond velocity, scaled into the engine's per-frame units.
+    worldRef.current?.release(
+      dragging,
+      fling ? clamp(fling.vx * 14, -26, 26) : 0,
+      fling ? clamp(fling.vy * 14, -26, 26) : 0,
+    );
 
-    workerRef.current?.postMessage({ type: "release", id: dragging });
-    worldRef.current?.release(dragging);
-
-    // A released pill keeps its momentum: velocity is per-millisecond, so scale
-    // it into the physics engine's per-frame units.
-    if (fling && (Math.abs(fling.vx) > 0.002 || Math.abs(fling.vy) > 0.002)) {
-      const kickX = clamp(fling.vx * 14, -22, 22);
-      const kickY = clamp(fling.vy * 14, -22, 22);
-      workerRef.current?.postMessage({
-        type: "kick",
-        id: fling.id,
-        vx: kickX,
-        vy: kickY,
-      });
-      worldRef.current?.kick(fling.id, kickX, kickY);
-    }
-
-    dragInfo.current = null;
+    dragRef.current = null;
     setDragging(null);
   };
 
-  const reset = () => {
-    if (!size.width || !size.height) return;
-    workerRef.current?.postMessage({
-      type: "init",
-      width: size.width,
-      height: size.height,
-      pills: seeds.map(({ id, width, height, x, y }) => ({ id, width, height, x, y })),
-      zeroG,
-    });
-    worldRef.current?.init(
-      size.width,
-      size.height,
-      seeds.map(({ id, width, height, x, y }) => ({ id, width, height, x, y })),
-      zeroG,
+  const reset = React.useCallback(() => {
+    const world = worldRef.current;
+    if (!world) return;
+
+    dragRef.current = null;
+    setDragging(null);
+    setHovered(null);
+
+    world.reset(
+      seeds.map(({ id, width, height, x, y }) => ({
+        id,
+        width,
+        height,
+        x,
+        y,
+      })),
+      zeroGRef.current,
     );
-  };
+  }, [seeds, setHovered]);
 
   React.useEffect(() => {
     resetRef.current = reset;
-  });
+  }, [reset, resetRef]);
 
   return (
-    <div className="relative">
-      <div
-        ref={containerRef}
-        onPointerMove={onPointerMove}
-        onPointerLeave={onPointerLeave}
-        onPointerUp={endDrag}
-        onPointerCancel={endDrag}
-        className="relative h-[26rem] touch-none overflow-hidden select-none sm:h-[24rem] lg:h-[26rem]"
-        role="region"
-        aria-label={t("arena.regionAria")}
-      >
-        <AnimatePresence initial={false}>
-          {seeds.map((pill) => {
-            const state = positions[pill.id];
-            const x = state?.x ?? pill.x;
-            const y = state?.y ?? pill.y;
-            const angle = state?.angle ?? 0;
-            const isDragging = dragging === pill.id;
+    <div
+      ref={containerRef}
+      onPointerMove={onPointerMove}
+      onPointerLeave={onPointerLeave}
+      onPointerUp={endDrag}
+      onPointerCancel={endDrag}
+      className="relative h-[26rem] touch-none overflow-hidden select-none sm:h-[24rem] lg:h-[26rem]"
+      role="region"
+      aria-label={t("arena.regionAria")}
+    >
+      <AnimatePresence initial={false}>
+        {seeds.map((pill) => {
+          const state = positions[pill.id];
+          const x = state?.x ?? pill.x;
+          const y = state?.y ?? pill.y;
+          const angle = state?.angle ?? 0;
+          const isDragging = dragging === pill.id;
 
-            return (
-              <motion.div
-                key={pill.id}
-                ref={(node) => {
-                  if (node) measureRefs.current.set(pill.id, node);
-                  else measureRefs.current.delete(pill.id);
-                }}
-                initial={{ opacity: 0, scale: 0.85 }}
-                animate={{
-                  opacity: 1,
-                  scale: isDragging ? 1.08 : 1,
-                  x: x - pill.width / 2,
-                  y: y - pill.height / 2,
-                }}
-                exit={{ opacity: 0, scale: 0.85 }}
-                transition={{
-                  x: { duration: 0 },
-                  y: { duration: 0 },
-                  opacity: { duration: 0.25 },
-                  scale: { duration: 0.18 },
-                }}
-                onPointerDown={(event) => startDrag(pill.id, event)}
-                onMouseEnter={() => setHovered(`${pill.group} · ${pill.label}`)}
-                onMouseLeave={() => setHovered(null)}
-                style={{
-                  width: pill.width,
-                  height: pill.height,
-                  rotate: `${angle}rad`,
-                  touchAction: "none",
-                }}
-                className={`absolute top-0 left-0 flex cursor-grab items-center gap-1.5 overflow-hidden rounded-full border px-3 font-mono text-[0.68rem] whitespace-nowrap backdrop-blur-sm transition-colors ${
-                  ACCENT_CLASS[pill.tone]
-                } ${isDragging ? "cursor-grabbing ring-2 ring-ring" : ""} ${
-                  hovered?.endsWith(pill.label) ? "brightness-110" : ""
-                }`}
-                aria-label={t("arena.skillAria", {
-                  label: pill.label,
-                  group: pill.group,
-                })}
-              >
-                <span
-                  className={`size-1.5 shrink-0 rounded-full ${DOT_CLASS[pill.tone]}`}
-                  aria-hidden="true"
-                />
-                <span className="truncate">{pill.label}</span>
-              </motion.div>
-            );
-          })}
-        </AnimatePresence>
+          return (
+            <motion.div
+              key={pill.id}
+              initial={{ opacity: 0, scale: 0.85 }}
+              animate={{
+                opacity: 1,
+                scale: isDragging ? 1.08 : 1,
+                x: x - pill.width / 2,
+                y: y - pill.height / 2,
+              }}
+              exit={{ opacity: 0, scale: 0.85 }}
+              transition={{
+                x: { duration: 0 },
+                y: { duration: 0 },
+                opacity: { duration: 0.25 },
+                scale: { duration: 0.18 },
+              }}
+              onPointerDown={(event) => startDrag(pill.id, event)}
+              onMouseEnter={() =>
+                setHovered({
+                  id: pill.id,
+                  text: `${pill.group} · ${pill.label}`,
+                })
+              }
+              onMouseLeave={() => setHovered(null)}
+              style={{
+                width: pill.width,
+                height: pill.height,
+                rotate: `${angle}rad`,
+                touchAction: "none",
+              }}
+              className={`absolute top-0 left-0 flex cursor-grab items-center gap-1.5 overflow-hidden rounded-full border px-3 font-mono text-[0.68rem] whitespace-nowrap backdrop-blur-sm transition-colors ${
+                ACCENT_CLASS[pill.tone]
+              } ${isDragging ? "cursor-grabbing ring-2 ring-ring" : ""} ${
+                hoveredId === pill.id ? "brightness-110" : ""
+              }`}
+              aria-label={t("arena.skillAria", {
+                label: pill.label,
+                group: pill.group,
+              })}
+            >
+              <span
+                className={`size-1.5 shrink-0 rounded-full ${DOT_CLASS[pill.tone]}`}
+                aria-hidden="true"
+              />
+              <span className="truncate">{pill.label}</span>
+            </motion.div>
+          );
+        })}
+      </AnimatePresence>
 
-        {!seeds.length ? (
-          <p className="absolute inset-0 grid place-items-center text-sm text-subtle">
-            {t("arena.empty")}
-          </p>
-        ) : null}
-      </div>
+      {!seeds.length ? (
+        <p className="absolute inset-0 grid place-items-center text-sm text-subtle">
+          {t("arena.empty")}
+        </p>
+      ) : null}
     </div>
   );
 }

@@ -2,11 +2,13 @@ import * as React from "react";
 
 import {
   certifications as certificationsSource,
+  committees as committeesSource,
   navLinks as navLinksSource,
   profile as profileSource,
   projects as projectsSource,
   skillGroups as skillGroupsSource,
   systems as systemsSource,
+  type CommitteeEntry,
   type Project,
   type SkillGroupId,
   type Tone,
@@ -17,6 +19,7 @@ import {
 } from "@/lib/gallery";
 import {
   certificationCopyId,
+  committeesId,
   galleryCopyId,
   navLabelsId,
   pipelineStepsId,
@@ -35,17 +38,24 @@ export type ProfileContent = {
   monogram: string;
   credential: string;
   title: string;
+  resumeTitle: string;
   availability: string;
   headline: string;
   bio: string;
+  summary: string;
   email: string;
   phone: string;
   phoneHref: string;
   linkedin: string;
   linkedinLabel: string;
+  github: string;
+  githubLabel: string;
   location: string;
   university: string;
   degree: string;
+  gpa: string;
+  educationPeriod: string;
+  languages: string[];
 };
 
 export type NavLinkContent = { label: string; href: string };
@@ -87,6 +97,7 @@ export type I18nValue = {
   skillGroups: SkillGroupContent[];
   systems: SystemContent[];
   certifications: CertificationContent[];
+  committees: CommitteeEntry[];
   gallery: GalleryItem[];
   pipelineSteps: string[];
 };
@@ -141,9 +152,13 @@ function projectFilterKeys(project: Project): ProjectFilterKey[] {
 function buildContent(lang: Lang) {
   const isId = lang === "id";
 
-  const profile: ProfileContent = isId
+  const profileBase = isId
     ? { ...profileSource, ...profileId }
     : { ...profileSource };
+  const profile: ProfileContent = {
+    ...profileBase,
+    languages: [...profileBase.languages],
+  };
 
   const navLinks: NavLinkContent[] = navLinksSource.map((link) => ({
     href: link.href,
@@ -166,6 +181,7 @@ function buildContent(lang: Lang) {
             summary: copy.summary,
             role: copy.role,
             metrics: copy.metrics,
+            resume: { ...project.resume, ...copy.resume },
           }
         : {}),
       cover,
@@ -190,6 +206,11 @@ function buildContent(lang: Lang) {
     },
   );
 
+  const committees: CommitteeEntry[] = committeesSource.map((entry, index) => {
+    const copy = isId ? committeesId[index] : undefined;
+    return copy ? { ...entry, ...copy } : { ...entry };
+  });
+
   const gallery: GalleryItem[] = gallerySource.map((item) => {
     const copy = isId ? galleryCopyId[item.slug] : undefined;
     return copy ? { ...item, ...copy } : { ...item };
@@ -206,6 +227,7 @@ function buildContent(lang: Lang) {
     skillGroups,
     systems,
     certifications,
+    committees,
     gallery,
     pipelineSteps,
   };

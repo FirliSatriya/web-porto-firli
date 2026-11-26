@@ -1,11 +1,12 @@
 import * as React from "react";
 import { motion } from "motion/react";
-import { ArrowUpRight, Check, Copy, Mail, MapPin, Phone } from "lucide-react";
+import { ArrowUpRight, Check, Copy, Download, Mail, MapPin, Phone } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { GitHubIcon, LinkedInIcon } from "@/components/icons";
 import { useCopy } from "@/hooks/use-copy";
 import { useI18n } from "@/i18n";
+import { resumePdfHref } from "@/lib/content";
 
 export function Contact() {
   const { profile, t } = useI18n();
@@ -48,13 +49,28 @@ export function Contact() {
           <Button
             variant="outline"
             render={
-              <a href="https://github.com/FirliSatriya" target="_blank" rel="noreferrer noopener" />
+              <a href={profile.github} target="_blank" rel="noreferrer noopener" />
             }
             nativeButton={false}
             className="h-9 rounded-full border-hairline-strong bg-surface px-4 text-[0.78rem] text-foreground hover:bg-surface-2"
           >
             <GitHubIcon className="size-3.5" />
             GitHub
+          </Button>
+          <Button
+            variant="outline"
+            render={
+              <a
+                href={resumePdfHref}
+                download="Firli-Satriya-Putri-CV.pdf"
+                aria-label={t("contact.downloadResumeAria")}
+              />
+            }
+            nativeButton={false}
+            className="h-9 rounded-full border-hairline-strong bg-surface px-4 text-[0.78rem] text-foreground hover:bg-surface-2"
+          >
+            <Download className="size-3.5" aria-hidden="true" />
+            {t("contact.downloadResume")}
           </Button>
         </div>
       </div>

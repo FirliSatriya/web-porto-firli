@@ -9,11 +9,18 @@ import type { SkillGroupId } from "@/lib/content";
 
 export const profileId = {
   title: "Engineer Informatika Terapan & Data Scientist Bersertifikat BNSP",
+  resumeTitle: "Desainer UI/UX | Pengembang Front-End | Operasi Data AI",
   availability: "Terbuka untuk peran Front-End & UI/UX",
   headline:
     "Mengubah Alur Kerja & Data yang Rumit menjadi Antarmuka yang Mulus",
   bio: "Hai, saya Firli Satriya Putri, S.Tr.Kom. Lulusan Informatika Terapan Universitas Airlangga dan Data Scientist Bersertifikat BNSP. Berpengalaman merombak antarmuka HRIS enterprise serta mengirim fitur baru di BASARNAS, juga berkontribusi pada desain UI/UX dan operasi kualitas data di Telkom Indonesia.",
+  summary:
+    "Lulusan Teknik Informatika Universitas Airlangga (S.Tr.Kom, IPK 3,43/4,00) dengan pengalaman langsung di desain UI/UX, pengembangan web front-end, operasi data AI, dan koordinasi program lapangan berskala besar. Rekam jejak dalam membangun design system Figma terstandar, mengembangkan aplikasi web responsif (React.js, TypeScript, Tailwind CSS, WebRTC), menjalankan anotasi ground truth dan penjaminan kualitas model, serta memimpin operasi digital lintas pemangku kepentingan.",
   degree: "Sarjana Terapan Teknik Informatika",
+  languages: [
+    "Bahasa Indonesia (Penutur asli)",
+    "Inggris (Menengah — Mahir dalam konteks kerja)",
+  ],
 } as const;
 
 export const navLabelsId: Record<string, string> = {
@@ -32,6 +39,8 @@ type ProjectCopy = {
   role: string;
   metrics: { label: string; value: string }[];
   coverAlt: string;
+  /** Résumé copy: period plus scannable outcome lines. */
+  resume: { period: string; bullets: string[] };
 };
 
 export const projectCopyId: Record<string, ProjectCopy> = {
@@ -49,6 +58,14 @@ export const projectCopyId: Record<string, ProjectCopy> = {
     ],
     coverAlt:
       "Karya sampul untuk magang Telkom Indonesia BigBox: logo Telkom dan BigBox berdampingan, sketsa dashboard eksekutif, dan frame CCTV dengan anotasi bounding box.",
+    resume: {
+      period: "Sep – Des 2025",
+      bullets: [
+        "Merancang dashboard eksekutif high-fidelity di Figma dengan design system terstandar.",
+        "Mengkurasi dataset ground truth lewat anotasi bounding box manual di Roboflow.",
+        "Memvalidasi model computer vision OCR dan CCTV terhadap benchmark manual untuk mengukur akurasi nyata.",
+      ],
+    },
   },
   "dss-mlbb": {
     title: "Sistem Pendukung Keputusan — Pemilihan Hero MLBB",
@@ -64,6 +81,14 @@ export const projectCopyId: Record<string, ProjectCopy> = {
     ],
     coverAlt:
       "Pratinjau tangkapan layar sistem pendukung keputusan pemilihan hero MLBB beserta antarmuka peringkatnya.",
+    resume: {
+      period: "2025",
+      bullets: [
+        "Membangun mesin rekomendasi AHP + SAW yang menilai dan memeringkat seluruh 132 hero Mobile Legends.",
+        "Menurunkan bobot kriteria dari perbandingan berpasangan dan memeriksanya dengan consistency ratio.",
+        "Mengalirkan hasil peringkat dari API Flask ke antarmuka responsif yang cepat dipakai saat bertanding.",
+      ],
+    },
   },
   maccessoris: {
     title: "MAccessoris",
@@ -79,6 +104,13 @@ export const projectCopyId: Record<string, ProjectCopy> = {
     ],
     coverAlt:
       "Pratinjau tangkapan layar etalase MAccessoris yang menampilkan katalog produknya.",
+    resume: {
+      period: "2023",
+      bullets: [
+        "Membangun katalog dengan filter yang tetap responsif seiring pertumbuhan inventaris.",
+        "Memangkas checkout jadi tiga langkah agar menjelajah berubah jadi membeli tanpa friksi.",
+      ],
+    },
   },
   firelle: {
     title: "FIRELLE — Sistem Point of Sale",
@@ -94,6 +126,13 @@ export const projectCopyId: Record<string, ProjectCopy> = {
     ],
     coverAlt:
       "Pratinjau tangkapan layar halaman login point-of-sale FIRELLE.",
+    resume: {
+      period: "2026",
+      bullets: [
+        "Membangun point-of-sale butik yang menyatukan manajemen produk, checkout, dan catatan transaksi.",
+        "Menyertakan mode demo di browser agar seluruh alur bisa dicoba tanpa akun.",
+      ],
+    },
   },
   "photobooth-remote": {
     title: "Photobooth Remote — Photo Booth WebRTC",
@@ -109,6 +148,13 @@ export const projectCopyId: Record<string, ProjectCopy> = {
     ],
     coverAlt:
       "Pratinjau tangkapan layar landing page Photobooth Remote untuk photo booth WebRTC-nya.",
+    resume: {
+      period: "2026",
+      bullets: [
+        "Membangun ruang photobooth WebRTC yang bisa dimasuki lewat tautan dan kode 6 digit, tanpa instalasi atau login.",
+        "Memicu semua rana di frame yang sama lewat hitung mundur terkalibrasi jam, lalu mengomposisi strip di GPU menjadi PNG atau MP4 boomerang.",
+      ],
+    },
   },
   "basarnas-bhris": {
     title: "BHRIS — Absensi QR & Pengajuan Cuti",
@@ -125,6 +171,14 @@ export const projectCopyId: Record<string, ProjectCopy> = {
     ],
     coverAlt:
       "Karya sampul untuk magang BHRIS BASARNAS Surabaya: lambang BASARNAS di samping panel absensi QR dan formulir pengajuan cuti.",
+    resume: {
+      period: "Mar – Jul 2026",
+      bullets: [
+        "Merancang dan mengembangkan dua fitur inti BHRIS — Absensi Rapat QR Code dan Sistem Pengajuan Cuti — untuk memangkas langkah manual administrasi staf internal.",
+        "Keduanya dimulai sebagai prototipe Figma interaktif end-to-end, lalu dikirim sebagai komponen web responsif yang konsisten di berbagai perangkat.",
+        "Menggantikan tanda tangan kertas dan pengajuan cuti lewat utas email dengan alur satu ketukan yang dapat diaudit.",
+      ],
+    },
   },
 };
 
@@ -179,7 +233,7 @@ export const skillGroupCopyId: Record<
     blurb: "Algoritma yang bisa mempertanggungjawabkan peringkatnya",
   },
   database: {
-    label: "Basis Data",
+    label: "Basis Data & Tools",
     blurb: "Pilihan skema yang menjaga query tetap jujur",
   },
   cert: {
@@ -197,6 +251,76 @@ export const certificationCopyId = [
   {
     name: "Sarjana Terapan Teknik Informatika",
     issuer: "Universitas Airlangga",
+  },
+];
+
+/** Positional: matches the order in `committees`. */
+export const committeesId = [
+  {
+    title: "Operasi Lapangan & Registrasi Digital",
+    org: "Badan Gizi Nasional · Surabaya",
+    detail:
+      "Mengelola operasi lapangan, mengawasi registrasi digital lewat situs web, dan mengoordinasikan alur konsultasi untuk kelompok peserta berskala besar dalam program penyuluhan gizi Badan Gizi Nasional, melibatkan pemangku kepentingan di tingkat daerah dan desa.",
+  },
+  {
+    title: "Pelatihan Associate Data Scientist",
+    org: "Kementerian Komunikasi Digital · Surabaya",
+    detail:
+      "Menyelesaikan program Associate Data Scientist yang berfokus pada infrastruktur digital, literasi media, dan transformasi digital nasional; meraih Sertifikat Kompetensi Data Science (BNSP Certified Associate Data Scientist, 2025–2028) yang mencakup analisis data, machine learning, dan pemecahan masalah berbasis data.",
+  },
+  {
+    title: "Program Pertukaran Mahasiswa",
+    org: "Universiti Teknologi MARA (UiTM) Kedah, Malaysia",
+    detail:
+      "Terpilih sebagai perwakilan mahasiswa dalam program pertukaran dua pekan di UiTM Kedah, mempelajari IoT, perpustakaan digital, dan sistem cerdas sekaligus memperkuat komunikasi lintas budaya dan adaptabilitas.",
+  },
+  {
+    title: "Staf Publikasi & Dokumentasi",
+    org: "Airlangga E-Sports Championships x PIMNAS",
+    detail:
+      "Membuat konten visual, branding acara, dan materi promosi untuk meningkatkan keterlibatan audiens sambil menjaga identitas visual yang koheren di seluruh platform media.",
+  },
+  {
+    title: "Koordinator Hubungan Masyarakat",
+    org: "PUBG Mobile Campus Cup",
+    detail:
+      "Mengelola komunikasi antara acara dan audiensnya, menangani outreach media, dan menjalankan kampanye promosi.",
+  },
+  {
+    title: "Presenter Riset",
+    org: "Konferensi Nasional Vokasi",
+    detail:
+      "Mempresentasikan riset berjudul “Pendekatan Nutrisi untuk Pemulihan Hipertensi melalui Rekomendasi Konsumsi Makanan dengan Metode K-Means Clustering dan Decision Tree”.",
+  },
+  {
+    title: "Staf Hubungan Masyarakat",
+    org: "Airlangga E-Sports League x GoPay",
+    detail:
+      "Mengelola komunikasi acara, berkoordinasi dengan mitra dan peserta, serta mendorong promosi acara di berbagai kanal media.",
+  },
+  {
+    title: "Staf Hubungan Masyarakat & Pengelolaan Web",
+    org: "UKM E-Sports UNAIR",
+    detail:
+      "Mengawasi strategi komunikasi, mengelola kemitraan, dan mempromosikan acara komunitas; merawat situs resmi UNAIR Esports agar kontennya mutakhir, koheren secara visual, dan mudah ditemukan.",
+  },
+  {
+    title: "Jaringan IT — Sistem Operasi",
+    org: "Cisco Networking Academy",
+    detail:
+      "Menyelesaikan program Cisco Networking Academy di bidang Jaringan IT dan meraih sertifikat atas penyelesaian kursus Sistem Operasi dalam lima bulan.",
+  },
+  {
+    title: "Staf Sekretariat",
+    org: "HIMTI GOIN 2023",
+    detail:
+      "Menangani tugas administrasi, mengoordinasikan dokumentasi acara, dan mendukung kelancaran eksekusi logistik di seluruh tim acara.",
+  },
+  {
+    title: "Staf Acara — Master of Ceremonies",
+    org: "Inisialisasi 2023",
+    detail:
+      "Memandu jalannya acara, menjaga keterlibatan audiens, dan memastikan program berjalan lancar lewat public speaking serta adaptasi real-time.",
   },
 ];
 
