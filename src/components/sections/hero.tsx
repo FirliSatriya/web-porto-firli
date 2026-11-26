@@ -87,7 +87,7 @@ export function Hero() {
               size="lg"
               className="h-11 w-full rounded-full border border-hairline-strong px-6 text-[0.86rem] font-medium text-foreground hover:bg-surface-2 sm:w-auto"
             >
-              <FileText data-icon="inline-start" aria-hidden="true" />
+              <FileText aria-hidden="true" />
               {t("hero.ctaResume")}
             </Button>
           </div>
