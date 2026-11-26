@@ -13,6 +13,8 @@ export type GalleryItem = {
   note: string;
   alt: string;
   tone: Tone;
+  /** Landscape frames (the lanyard strap is 4:1) span the whole wall. */
+  wide?: boolean;
 };
 
 export const gallery: GalleryItem[] = [
@@ -27,6 +29,7 @@ export const gallery: GalleryItem[] = [
     note: "Strap artwork for PIMNAS × Airlangga E-Sports Championship. Partner marks, the event lockup and a neon ribbon that still reads while it is being worn.",
     alt: "Two lanyard straps on a blurred neon backdrop, carrying PUBG Mobile, PIMNAS 37, Mobile Legends and AEC marks around the event title.",
     tone: "high",
+    wide: true,
   },
   {
     slug: "aec-open-recruitment",
